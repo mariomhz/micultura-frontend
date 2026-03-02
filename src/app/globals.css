@@ -1,20 +1,64 @@
 @import "tailwindcss";
 
+/* ===== Neobrutalism Design System ===== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand colors */
+  --neo-purple: #7c3aed;
+  --neo-purple-light: #a78bfa;
+  --neo-purple-dark: #5b21b6;
+  --neo-gold: #d97706;
+  --neo-gold-light: #fbbf24;
+  --neo-yellow: #facc15;
+  --neo-yellow-light: #fef08a;
+  --neo-lilac: #c4b5fd;
+  --neo-lilac-light: #ddd6fe;
+
+  /* Neutral palette */
+  --neo-black: #1a1a1a;
+  --neo-white: #fffbeb;
+  --neo-cream: #fef3c7;
+  --neo-gray: #737373;
+
+  /* Semantic tokens */
+  --background: var(--neo-white);
+  --foreground: var(--neo-black);
+  --accent: var(--neo-purple);
+  --accent-light: var(--neo-lilac);
+  --highlight: var(--neo-yellow);
+
+  /* Neobrutalism constants */
+  --neo-border: 3px solid var(--neo-black);
+  --neo-border-thick: 4px solid var(--neo-black);
+  --neo-radius: 12px;
+  --neo-shadow: 4px 4px 0px var(--neo-black);
+  --neo-shadow-lg: 6px 6px 0px var(--neo-black);
+  --neo-shadow-hover: 2px 2px 0px var(--neo-black);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-neo-purple: var(--neo-purple);
+  --color-neo-purple-light: var(--neo-purple-light);
+  --color-neo-purple-dark: var(--neo-purple-dark);
+  --color-neo-gold: var(--neo-gold);
+  --color-neo-gold-light: var(--neo-gold-light);
+  --color-neo-yellow: var(--neo-yellow);
+  --color-neo-yellow-light: var(--neo-yellow-light);
+  --color-neo-lilac: var(--neo-lilac);
+  --color-neo-lilac-light: var(--neo-lilac-light);
+  --color-neo-black: var(--neo-black);
+  --color-neo-white: var(--neo-white);
+  --color-neo-cream: var(--neo-cream);
+  --color-neo-gray: var(--neo-gray);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #1a1a1a;
     --foreground: #ededed;
   }
 }
@@ -25,7 +69,154 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Utility: hide elements before GSAP animates them (prevents flash) */
+/* ===== Neobrutalism Component Helpers ===== */
+
+/* Card with hard shadow */
+.neo-card {
+  border: var(--neo-border);
+  border-radius: var(--neo-radius);
+  box-shadow: var(--neo-shadow);
+  background: var(--neo-white);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.neo-card:hover {
+  box-shadow: var(--neo-shadow-hover);
+  transform: translate(2px, 2px);
+}
+
+/* Button base */
+.neo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-weight: 700;
+  border: var(--neo-border);
+  border-radius: var(--neo-radius);
+  box-shadow: var(--neo-shadow);
+  cursor: pointer;
+  transition: box-shadow 0.1s ease, transform 0.1s ease;
+}
+
+.neo-btn:hover {
+  box-shadow: var(--neo-shadow-hover);
+  transform: translate(2px, 2px);
+}
+
+.neo-btn:active {
+  box-shadow: none;
+  transform: translate(4px, 4px);
+}
+
+/* Color variants */
+.neo-btn-purple {
+  background: var(--neo-purple);
+  color: white;
+}
+
+.neo-btn-yellow {
+  background: var(--neo-yellow);
+  color: var(--neo-black);
+}
+
+.neo-btn-gold {
+  background: var(--neo-gold);
+  color: white;
+}
+
+.neo-btn-lilac {
+  background: var(--neo-lilac);
+  color: var(--neo-black);
+}
+
+/* Tag / badge */
+.neo-tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: 2px solid var(--neo-black);
+  border-radius: 999px;
+  box-shadow: 2px 2px 0px var(--neo-black);
+}
+
+/* Hard-shadow input */
+.neo-input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: var(--neo-border);
+  border-radius: var(--neo-radius);
+  box-shadow: var(--neo-shadow);
+  background: white;
+  outline: none;
+  transition: box-shadow 0.15s ease;
+}
+
+.neo-input:focus {
+  box-shadow: var(--neo-shadow-lg);
+  border-color: var(--neo-purple);
+}
+
+/* Divider */
+.neo-divider {
+  border: none;
+  border-top: var(--neo-border);
+  margin: 2rem 0;
+}
+
+/* ===== Animation Utilities (CSS) ===== */
+
+/* Fade in */
+.anim-fade-in {
+  animation: fadeIn 0.6s ease-out both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Slide in from left */
+.anim-slide-left {
+  animation: slideLeft 0.5s ease-out both;
+}
+
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Slide in from right */
+.anim-slide-right {
+  animation: slideRight 0.5s ease-out both;
+}
+
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Scale up */
+.anim-scale-up {
+  animation: scaleUp 0.4s ease-out both;
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Stagger delays (use with any anim-* class) */
+.anim-delay-1 { animation-delay: 0.1s; }
+.anim-delay-2 { animation-delay: 0.2s; }
+.anim-delay-3 { animation-delay: 0.3s; }
+.anim-delay-4 { animation-delay: 0.4s; }
+.anim-delay-5 { animation-delay: 0.5s; }
+
+/* GSAP helper: hide before animation */
 .gsap-hidden {
   visibility: hidden;
 }

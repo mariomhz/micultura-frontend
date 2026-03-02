@@ -9,7 +9,10 @@ export default function Home() {
   return (
     <PageLoadWrapper>
       <main className="mx-auto max-w-3xl px-6 py-12">
-        <nav className="mb-8 flex gap-4 text-sm">
+        <nav className="mb-8 flex flex-wrap gap-3 text-sm">
+          <Link href="/design-system" className="neo-btn neo-btn-purple text-sm py-1.5 px-3">
+            Design System
+          </Link>
           <Link href="/about" className="underline hover:opacity-70">
             About
           </Link>
