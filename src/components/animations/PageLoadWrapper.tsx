@@ -10,7 +10,7 @@ export default function PageLoadWrapper({ children }: { children: React.ReactNod
     if (!containerRef.current) return;
     const tl = createPageLoadTimeline(containerRef.current);
     return () => {
-      tl.kill();
+      tl.revert();
     };
   }, []);
 
