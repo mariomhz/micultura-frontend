@@ -64,6 +64,29 @@ All animation components live in `src/components/animations/`:
 | `ScrollReveal.tsx` | Scroll-based reveal | ScrollTrigger   |
 | `PageLoadWrapper`  | Sequenced entrance  | `gsap.timeline` |
 
+## Page Transitions
+
+Page transitions use GSAP + Next.js App Router's `template.tsx` (which re-mounts on every navigation).
+
+### Architecture
+
+- **`template.tsx`** — wraps children in `<PageTransition>`. Re-mounts per route, triggering the enter animation.
+- **`PageTransition`** (`src/components/transitions/PageTransition.tsx`) — plays `createEnterTimeline()` on mount, scrolls to top on pathname change.
+- **`TransitionOverlay`** (`src/components/transitions/TransitionOverlay.tsx`) — full-screen color wipe in `layout.tsx` (persists across navigations). Skips on first render, then animates `yPercent` in/out on pathname change.
+- **`pageTransitions.ts`** (`src/animations/pageTransitions.ts`) — exports `createEnterTimeline(element, type)` and `createExitTimeline(element, type)`.
+
+### Transition Types
+
+| Type    | Enter Effect              | Exit Effect                |
+|---------|---------------------------|----------------------------|
+| `fade`  | Opacity 0 → 1            | Opacity 1 → 0             |
+| `slide` | Opacity 0 + y:60 → origin | Opacity 1 → 0, y → -40   |
+| `scale` | Opacity 0 + scale:0.95   | Opacity 1 → 0, scale:1.05 |
+
+### Layering with PageLoadWrapper
+
+The home page uses `PageLoadWrapper` for its internal element sequencing (hero title, subtitle, sections). This layers on top of the page transition — `PageTransition` animates the whole page container, then `PageLoadWrapper` sequences individual elements within.
+
 ## Best Practices
 
 1. Always use `gsap.context()` (or the `useGSAP` hook) for cleanup.

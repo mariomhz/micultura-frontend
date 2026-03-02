@@ -1,3 +1,4 @@
+import Link from "next/link";
 import PageLoadWrapper from "@/components/animations/PageLoadWrapper";
 import FadeIn from "@/components/animations/FadeIn";
 import ScaleUp from "@/components/animations/ScaleUp";
@@ -8,6 +9,18 @@ export default function Home() {
   return (
     <PageLoadWrapper>
       <main className="mx-auto max-w-3xl px-6 py-12">
+        <nav className="mb-8 flex gap-4 text-sm">
+          <Link href="/about" className="underline hover:opacity-70">
+            About
+          </Link>
+          <Link href="/work" className="underline hover:opacity-70">
+            Work
+          </Link>
+          <Link href="/contact" className="underline hover:opacity-70">
+            Contact
+          </Link>
+        </nav>
+
         <header className="text-center py-12">
           <h1 data-anim="hero-title" className="text-4xl font-bold tracking-tight">
             GSAP + Next.js Demo
