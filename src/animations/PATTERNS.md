@@ -87,6 +87,74 @@ Page transitions use GSAP + Next.js App Router's `template.tsx` (which re-mounts
 
 The home page uses `PageLoadWrapper` for its internal element sequencing (hero title, subtitle, sections). This layers on top of the page transition — `PageTransition` animates the whole page container, then `PageLoadWrapper` sequences individual elements within.
 
+## Neobrutalism Design System
+
+### CSS Variables (defined in `globals.css`)
+
+| Variable             | Color   | Use case                  |
+|----------------------|---------|---------------------------|
+| `--neo-purple`       | #7c3aed | Primary / accent          |
+| `--neo-gold`         | #d97706 | Secondary / warm accent   |
+| `--neo-yellow`       | #facc15 | Highlight / attention     |
+| `--neo-lilac`        | #c4b5fd | Soft background / tags    |
+| `--neo-black`        | #1a1a1a | Borders, shadows, text    |
+| `--neo-white`        | #fffbeb | Warm white background     |
+| `--neo-cream`        | #fef3c7 | Card backgrounds          |
+
+Each color has a `-light` variant (e.g. `--neo-purple-light`). All are registered in `@theme inline` so Tailwind classes work: `bg-neo-purple`, `text-neo-gold`, etc.
+
+### CSS Helper Classes
+
+| Class             | What it does                                      |
+|-------------------|---------------------------------------------------|
+| `.neo-card`       | Border + hard shadow + hover press effect         |
+| `.neo-btn`        | Bold button with shadow + active press            |
+| `.neo-btn-purple` | Purple variant (also: `-yellow`, `-gold`, `-lilac`) |
+| `.neo-tag`        | Small pill badge with shadow                      |
+| `.neo-input`      | Input field with hard shadow + focus glow         |
+| `.neo-divider`    | Thick border divider line                         |
+
+### Animation Utilities
+
+**CSS classes** (no GSAP needed — good for Navbar items):
+
+| Class              | Effect              |
+|--------------------|---------------------|
+| `.anim-fade-in`    | Fade + slide up     |
+| `.anim-slide-left` | Slide from left     |
+| `.anim-slide-right`| Slide from right    |
+| `.anim-scale-up`   | Scale from 90%      |
+| `.anim-delay-1..5` | Stagger delays      |
+
+**GSAP components** (`src/components/animations/NeoAnimations.tsx`):
+
+| Component       | Effect                          | Props                        |
+|-----------------|---------------------------------|------------------------------|
+| `<NeoFadeIn>`   | Fade + slide up with GSAP       | `delay`, `className`         |
+| `<NeoSlideIn>`  | Slide from left/right with GSAP | `delay`, `direction`, `className` |
+| `<NeoScaleUp>`  | Scale up with back-ease         | `delay`, `className`         |
+| `<NeoBounceCard>` | Hover lift on neo-cards       | `className`                  |
+
+### For Raquel's Navbar
+
+The Navbar can use CSS animation classes directly without importing GSAP:
+
+```tsx
+<nav>
+  <a className="anim-fade-in anim-delay-1">Home</a>
+  <a className="anim-fade-in anim-delay-2">About</a>
+  <a className="anim-fade-in anim-delay-3">Work</a>
+</nav>
+```
+
+Or wrap items in GSAP components for richer control:
+
+```tsx
+<NeoSlideIn delay={0.1} direction="left">
+  <a className="neo-btn neo-btn-purple">Home</a>
+</NeoSlideIn>
+```
+
 ## Best Practices
 
 1. Always use `gsap.context()` (or the `useGSAP` hook) for cleanup.
