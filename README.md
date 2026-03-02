@@ -6,10 +6,10 @@ Se trata de una **Single Page Application (SPA)** que consume una **API REST** d
 ---
 
 ## 🛠️ Tecnologías utilizadas
-- Framework / Librería SPA:  
-- Lenguaje:
-- Gestor de dependencias:
-- Otras herramientas:
+- Framework / Librería SPA: Next.js (App Router)
+- Lenguaje: TypeScript
+- Gestor de dependencias: npm
+- Otras herramientas: GSAP (animaciones), Tailwind CSS, shadcn/ui
 
 ---
 
