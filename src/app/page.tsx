@@ -4,6 +4,7 @@ import FadeIn from "@/components/animations/FadeIn";
 import ScaleUp from "@/components/animations/ScaleUp";
 import FlipCard from "@/components/animations/FlipCard";
 import ScrollReveal from "@/components/animations/ScrollReveal";
+import AuthStatus from "@/components/auth/AuthStatus";
 
 export default function Home() {
   return (
@@ -22,12 +23,9 @@ export default function Home() {
           <Link href="/contact" className="underline hover:opacity-70">
             Contact
           </Link>
-          <Link href="/register" className="neo-btn neo-btn-yellow text-sm py-1.5 px-3 ml-auto">
-            Registrarse
-          </Link>
-          <Link href="/login" className="underline hover:opacity-70">
-            Iniciar Sesión
-          </Link>
+          <span className="ml-auto flex flex-wrap gap-3 items-center">
+            <AuthStatus />
+          </span>
         </nav>
 
         <header className="text-center py-12">

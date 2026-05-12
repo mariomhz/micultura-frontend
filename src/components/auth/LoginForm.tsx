@@ -4,11 +4,12 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { login, type AuthError } from "@/services/auth";
-import { setToken } from "@/lib/token";
+import { useAuth } from "@/context/AuthContext";
 import { NeoFadeIn } from "@/components/animations/NeoAnimations";
 
 export default function LoginForm() {
   const router = useRouter();
+  const auth = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -26,7 +27,7 @@ export default function LoginForm() {
     setLoading(true);
     try {
       const res = await login({ email, password });
-      setToken(res.token);
+      auth.login(res.token, res.user);
       router.push("/");
     } catch (err) {
       const authErr = err as AuthError;
