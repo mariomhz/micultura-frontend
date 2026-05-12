@@ -319,3 +319,61 @@ body {
   color: var(--neo-purple);
   font-size: 0.75rem;
 }
+
+/* ===== Leaflet Neobrutalism Overrides ===== */
+
+.neo-map {
+  border-radius: var(--neo-radius);
+}
+
+.neo-map .leaflet-control-zoom a {
+  background: var(--neo-white);
+  color: var(--neo-black);
+  border: 2px solid var(--neo-black);
+  box-shadow: 2px 2px 0px var(--neo-black);
+  font-weight: 700;
+  width: 34px;
+  height: 34px;
+  line-height: 30px;
+  font-size: 1.1rem;
+  transition: box-shadow 0.1s ease, transform 0.1s ease;
+}
+
+.neo-map .leaflet-control-zoom a:hover {
+  background: var(--neo-cream);
+  box-shadow: 1px 1px 0px var(--neo-black);
+  transform: translate(1px, 1px);
+}
+
+.neo-map .leaflet-control-zoom {
+  border: none;
+  box-shadow: none;
+}
+
+.neo-map .leaflet-control-attribution {
+  background: var(--neo-white);
+  border: 2px solid var(--neo-black);
+  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  box-shadow: 2px 2px 0px var(--neo-black);
+}
+
+.neo-map .leaflet-popup-content-wrapper {
+  border: 3px solid var(--neo-black);
+  border-radius: var(--neo-radius);
+  box-shadow: var(--neo-shadow);
+  padding: 0;
+}
+
+.neo-map .leaflet-popup-tip {
+  border: 2px solid var(--neo-black);
+  box-shadow: 2px 2px 0px var(--neo-black);
+}
+
+.neo-map .leaflet-popup-close-button {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--neo-black);
+}
