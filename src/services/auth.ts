@@ -50,7 +50,32 @@ export interface LoginPayload {
   password: string;
 }
 
-// Stubbed for MC-05-03
-export async function login(_payload: LoginPayload): Promise<AuthResponse> {
-  throw new Error("Login not implemented yet");
+export async function login(payload: LoginPayload): Promise<AuthResponse> {
+  await delay(800);
+
+  if (payload.password !== "password123") {
+    const error: AuthError = {
+      message: "Credenciales inválidas",
+    };
+    throw error;
+  }
+
+  const fakePayload = btoa(
+    JSON.stringify({
+      sub: payload.email,
+      id: "mock-uuid-001",
+      nombre: "Usuario Mock",
+      rol: "USER",
+    })
+  );
+
+  return {
+    token: `eyHeader.${fakePayload}.eySignature`,
+    user: {
+      id: "mock-uuid-001",
+      nombre: "Usuario Mock",
+      email: payload.email,
+      rol: "USER",
+    },
+  };
 }
