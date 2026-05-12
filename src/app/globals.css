@@ -220,3 +220,102 @@ body {
 .gsap-hidden {
   visibility: hidden;
 }
+
+/* ===== FullCalendar Neobrutalism Overrides ===== */
+
+.neo-calendar-wrapper .fc {
+  --fc-border-color: var(--neo-black);
+  --fc-today-bg-color: var(--neo-yellow-light);
+  --fc-event-border-color: var(--neo-black);
+  font-family: inherit;
+}
+
+.neo-calendar-wrapper .fc .fc-toolbar-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.neo-calendar-wrapper .fc .fc-button {
+  background: var(--neo-white);
+  color: var(--neo-black);
+  border: 2px solid var(--neo-black);
+  border-radius: 8px;
+  box-shadow: 3px 3px 0px var(--neo-black);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  padding: 0.3rem 0.7rem;
+  transition: box-shadow 0.1s ease, transform 0.1s ease;
+}
+
+.neo-calendar-wrapper .fc .fc-button:hover {
+  box-shadow: 1px 1px 0px var(--neo-black);
+  transform: translate(2px, 2px);
+}
+
+.neo-calendar-wrapper .fc .fc-button:active,
+.neo-calendar-wrapper .fc .fc-button-active {
+  box-shadow: none;
+  transform: translate(3px, 3px);
+  background: var(--neo-purple);
+  color: white;
+}
+
+.neo-calendar-wrapper .fc .fc-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.neo-calendar-wrapper .fc .fc-col-header-cell {
+  background: var(--neo-purple);
+  color: white;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0;
+  border: 2px solid var(--neo-black);
+}
+
+.neo-calendar-wrapper .fc .fc-daygrid-day {
+  border: 2px solid var(--neo-black);
+  transition: background 0.15s ease;
+}
+
+.neo-calendar-wrapper .fc .fc-daygrid-day:hover {
+  background: var(--neo-cream);
+  cursor: pointer;
+}
+
+.neo-calendar-wrapper .fc .fc-daygrid-day.fc-day-today {
+  background: var(--neo-yellow-light);
+}
+
+.neo-calendar-wrapper .fc .fc-daygrid-event {
+  border: 2px solid var(--neo-black);
+  border-radius: 6px;
+  box-shadow: 2px 2px 0px var(--neo-black);
+  font-weight: 700;
+  font-size: 0.7rem;
+  padding: 1px 4px;
+  margin-bottom: 2px;
+}
+
+.neo-calendar-wrapper .fc .fc-daygrid-event:hover {
+  box-shadow: 1px 1px 0px var(--neo-black);
+  transform: translate(1px, 1px);
+}
+
+.neo-calendar-wrapper .fc .fc-scrollgrid {
+  border: 3px solid var(--neo-black);
+  border-radius: var(--neo-radius);
+  overflow: hidden;
+}
+
+.neo-calendar-wrapper .fc .fc-more-link {
+  font-weight: 700;
+  color: var(--neo-purple);
+  font-size: 0.75rem;
+}
