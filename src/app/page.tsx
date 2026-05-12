@@ -1,6 +1,7 @@
 import Link from "next/link";
 import PageLoadWrapper from "@/components/animations/PageLoadWrapper";
 import CalendarSection from "@/components/calendar/CalendarSection";
+import MapSection from "@/components/map/MapSection";
 
 export default function Home() {
   return (
@@ -31,6 +32,10 @@ export default function Home() {
         </header>
 
         <CalendarSection />
+
+        <hr className="neo-divider" />
+
+        <MapSection />
       </main>
     </PageLoadWrapper>
   );
