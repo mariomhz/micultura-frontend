@@ -1,7 +1,10 @@
 "use client";
 
 import { MapContainer, TileLayer } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 import "leaflet/dist/leaflet.css";
+import { mockEvents } from "@/data/mockEvents";
+import EventMarker from "./EventMarker";
 
 const PR_CENTER: [number, number] = [18.22, -66.59];
 const PR_ZOOM = 9;
@@ -19,6 +22,23 @@ export default function EventMap() {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      <MarkerClusterGroup
+        chunkedLoading
+        iconCreateFunction={(cluster: { getChildCount: () => number }) => {
+          const L = require("leaflet");
+          const count = cluster.getChildCount();
+          return L.divIcon({
+            className: "",
+            html: `<div class="neo-cluster">${count}</div>`,
+            iconSize: [40, 40],
+            iconAnchor: [20, 20],
+          });
+        }}
+      >
+        {mockEvents.map((event) => (
+          <EventMarker key={event.id} event={event} />
+        ))}
+      </MarkerClusterGroup>
     </MapContainer>
   );
 }
