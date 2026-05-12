@@ -22,6 +22,12 @@ export default function Home() {
           <Link href="/contact" className="underline hover:opacity-70">
             Contact
           </Link>
+          <Link href="/register" className="neo-btn neo-btn-yellow text-sm py-1.5 px-3 ml-auto">
+            Registrarse
+          </Link>
+          <Link href="/login" className="underline hover:opacity-70">
+            Iniciar Sesión
+          </Link>
         </nav>
 
         <header className="text-center py-12">
