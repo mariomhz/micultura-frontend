@@ -1,4 +1,3 @@
-import { mockEvents, mockCategories } from "@/mocks/events";
 import { EventCatalog } from "@/components/events/EventCatalog";
 
 export const metadata = {
@@ -36,9 +35,9 @@ export default function EventsPage() {
         </div>
       </section>
 
-      {/* Catalog with filters */}
+      {/* Catalog: fetches from API, falls back to mock */}
       <section className="max-w-7xl mx-auto px-4 py-12">
-        <EventCatalog events={mockEvents} categories={mockCategories} />
+        <EventCatalog />
       </section>
     </main>
   );
