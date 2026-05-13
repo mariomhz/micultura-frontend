@@ -2,6 +2,8 @@ import Link from "next/link";
 import PageLoadWrapper from "@/components/animations/PageLoadWrapper";
 import { mockEvents, mockCategories } from "@/mocks/events";
 import { EventCard } from "@/components/events/EventCard";
+import CalendarSection from "@/components/calendar/CalendarSection";
+import MapSection from "@/components/map/MapSection";
 
 const FEATURES = [
   {
@@ -49,7 +51,6 @@ export default function Home() {
         className="relative min-h-[92vh] flex flex-col justify-center overflow-hidden px-4 py-20"
         style={{ background: "var(--neo-purple)" }}
       >
-        {/* Decorative large text behind content */}
         <span
           aria-hidden
           className="absolute right-0 top-1/2 -translate-y-1/2 text-[22vw] font-black leading-none select-none pointer-events-none opacity-[0.06] text-white"
@@ -59,7 +60,6 @@ export default function Home() {
 
         <div className="max-w-7xl mx-auto w-full relative z-10">
           <div className="max-w-3xl">
-            {/* Eyebrow */}
             <p
               data-anim="hero-subtitle"
               className="inline-flex items-center gap-2 mb-6 px-3 py-1 font-black text-sm uppercase tracking-widest text-neo-black"
@@ -68,7 +68,6 @@ export default function Home() {
               📍 Tenerife · Islas Canarias
             </p>
 
-            {/* Main title */}
             <h1
               data-anim="hero-title"
               className="font-black text-white leading-[0.92] mb-6"
@@ -85,7 +84,6 @@ export default function Home() {
               en tu mano.
             </h1>
 
-            {/* Subtitle */}
             <p
               data-anim="hero-subtitle"
               className="text-xl font-medium mb-10 max-w-xl"
@@ -95,7 +93,6 @@ export default function Home() {
               de la isla, en un solo lugar.
             </p>
 
-            {/* CTAs */}
             <div data-anim="section" className="flex flex-wrap gap-4">
               <Link
                 href="/events"
@@ -122,7 +119,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Bottom wave decoration */}
         <div
           className="absolute bottom-0 left-0 w-full h-4"
           style={{ background: "var(--neo-black)" }}
@@ -199,7 +195,11 @@ export default function Home() {
       <section
         data-anim="section"
         className="py-20 px-4"
-        style={{ background: "var(--neo-cream)", borderTop: "4px solid var(--neo-black)", borderBottom: "4px solid var(--neo-black)" }}
+        style={{
+          background: "var(--neo-cream)",
+          borderTop: "4px solid var(--neo-black)",
+          borderBottom: "4px solid var(--neo-black)",
+        }}
       >
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-black text-neo-black mb-10">
@@ -246,6 +246,32 @@ export default function Home() {
               <EventCard key={event.id} event={event} />
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════
+          CALENDARIO (MC-03)
+      ══════════════════════════════════════════════════ */}
+      <section
+        data-anim="section"
+        className="py-20 px-4"
+        style={{ background: "var(--neo-cream)", borderTop: "4px solid var(--neo-black)" }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <CalendarSection />
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════
+          MAPA (MC-03)
+      ══════════════════════════════════════════════════ */}
+      <section
+        data-anim="section"
+        className="py-20 px-4"
+        style={{ background: "var(--neo-white)", borderTop: "4px solid var(--neo-black)" }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <MapSection />
         </div>
       </section>
     </PageLoadWrapper>
