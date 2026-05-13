@@ -1,5 +1,5 @@
-import { mockEvents } from "@/mocks/events";
-import { EventGrid } from "@/components/events/EventGrid";
+import { mockEvents, mockCategories } from "@/mocks/events";
+import { EventCatalog } from "@/components/events/EventCatalog";
 
 export const metadata = {
   title: "Eventos Culturales — MiCultura Tenerife",
@@ -36,15 +36,9 @@ export default function EventsPage() {
         </div>
       </section>
 
-      {/* Catalog */}
+      {/* Catalog with filters */}
       <section className="max-w-7xl mx-auto px-4 py-12">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-black text-neo-black">
-            {mockEvents.length} eventos disponibles
-          </h2>
-        </div>
-
-        <EventGrid events={mockEvents} />
+        <EventCatalog events={mockEvents} categories={mockCategories} />
       </section>
     </main>
   );
