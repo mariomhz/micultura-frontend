@@ -2,6 +2,7 @@ import Link from "next/link";
 import PageLoadWrapper from "@/components/animations/PageLoadWrapper";
 import CalendarSection from "@/components/calendar/CalendarSection";
 import MapSection from "@/components/map/MapSection";
+import AuthStatus from "@/components/auth/AuthStatus";
 
 export default function Home() {
   return (
@@ -20,6 +21,9 @@ export default function Home() {
           <Link href="/contact" className="underline hover:opacity-70">
             Contact
           </Link>
+          <span className="ml-auto flex flex-wrap gap-3 items-center">
+            <AuthStatus />
+          </span>
         </nav>
 
         <header className="text-center py-12">
