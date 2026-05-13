@@ -217,6 +217,20 @@
   border-color: var(--neo-purple);
 }
 
+/* Category chip (home page) */
+.neo-chip {
+  border: 3px solid var(--neo-black);
+  box-shadow: 4px 4px 0 var(--neo-black);
+  background: var(--neo-white);
+  transition: background 0.1s ease, box-shadow 0.1s ease, transform 0.1s ease;
+}
+
+.neo-chip:hover {
+  background: var(--neo-yellow);
+  box-shadow: 2px 2px 0 var(--neo-black);
+  transform: translate(2px, 2px);
+}
+
 /* Divider */
 .neo-divider {
   border: none;
