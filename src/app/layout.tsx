@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Navbar } from "@/components/layout/Navbar";
 import TransitionOverlay from "@/components/transitions/TransitionOverlay";
 import "./globals.css";
 
@@ -14,8 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MiCultura — GSAP Demo",
-  description: "GSAP + Next.js animation foundation",
+  title: "MiCultura Tenerife — Eventos Culturales",
+  description:
+    "Descubre los mejores eventos culturales de Tenerife: conciertos, teatro, exposiciones, cine y más.",
 };
 
 export default function RootLayout({
@@ -24,11 +26,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="es">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <TransitionOverlay />
+        <Navbar />
         {children}
       </body>
     </html>
