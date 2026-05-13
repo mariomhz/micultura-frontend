@@ -13,13 +13,8 @@ const EventMap = dynamic(() => import("./EventMap"), {
 
 export default function MapSection() {
   return (
-    <section className="py-10">
-      <h2 className="text-2xl font-bold mb-6 tracking-tight">
-        Mapa de Eventos
-      </h2>
-      <div className="neo-card overflow-hidden hover:transform-none hover:shadow-[var(--neo-shadow)]">
-        <EventMap />
-      </div>
-    </section>
+    <div className="neo-card overflow-hidden hover:transform-none hover:shadow-[var(--neo-shadow)]">
+      <EventMap />
+    </div>
   );
 }
