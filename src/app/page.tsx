@@ -20,6 +20,9 @@ export default function Home() {
           <Link href="/contact" className="underline hover:opacity-70">
             Contact
           </Link>
+          <span className="ml-auto flex flex-wrap gap-3 items-center">
+            <AuthStatus />
+          </span>
         </nav>
 
         <header className="text-center py-12">
