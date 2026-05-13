@@ -1,22 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import TransitionOverlay from "@/components/transitions/TransitionOverlay";
+import { Roboto_Mono, Space_Grotesk } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const robotoMono = Roboto_Mono({
+  variable: "--font-roboto-mono",
   subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "MiCultura — GSAP Demo",
-  description: "GSAP + Next.js animation foundation",
+  title: "MiCultura — Eventos Culturales de Tenerife",
+  description:
+    "Descubre y explora eventos culturales en Tenerife: festivales, conciertos, exposiciones, talleres y mucho más.",
 };
 
 export default function RootLayout({
@@ -25,14 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${robotoMono.variable} ${spaceGrotesk.variable} antialiased`}
       >
-        <AuthProvider>
-          <TransitionOverlay />
-          {children}
-        </AuthProvider>
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
