@@ -5,6 +5,8 @@ import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@/hooks/useGSAP";
 import type { Event } from "@/types";
+import { TicketSelector } from "./TicketSelector";
+import { ShareButtons } from "./ShareButtons";
 
 function formatLongDate(fecha: string, hora: string): string {
   const d = new Date(fecha + "T00:00:00");
@@ -14,7 +16,6 @@ function formatLongDate(fecha: string, hora: string): string {
     month: "long",
     year: "numeric",
   });
-  // Capitalize weekday
   return dateStr.charAt(0).toUpperCase() + dateStr.slice(1) + " · " + hora;
 }
 
@@ -47,8 +48,6 @@ export function EventDetail({ event }: EventDetailProps) {
     `?bbox=${event.longitud - 0.02},${event.latitud - 0.02},` +
     `${event.longitud + 0.02},${event.latitud + 0.02}` +
     `&layer=mapnik&marker=${event.latitud},${event.longitud}`;
-
-  const isFree = event.precio === 0;
 
   return (
     <div ref={containerRef} className="min-h-screen bg-neo-white">
@@ -155,85 +154,32 @@ export function EventDetail({ event }: EventDetailProps) {
               />
             </div>
             <a
-              href={`https://www.openstreetmap.org/?mlat=${event.latitud}&mlon=${event.longitud}&zoom=15`}
+              href={`https://www.google.com/maps/search/?api=1&query=${event.latitud},${event.longitud}`}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-2 inline-block text-sm font-bold text-neo-purple underline"
             >
-              Abrir en OpenStreetMap →
+              Abrir en Google Maps →
             </a>
           </div>
+
+          {/* Share buttons */}
+          <ShareButtons event={event} />
         </div>
 
         {/* ── Right: sidebar (1/3) ──────────────────────────────── */}
         <aside className="space-y-4">
-          {/* Price card */}
-          <div
-            className="detail-block p-6 text-center"
-            style={{
-              border: "3px solid var(--neo-black)",
-              boxShadow: "4px 4px 0 var(--neo-black)",
-              background: isFree ? "var(--neo-yellow)" : "var(--neo-purple)",
-            }}
-          >
-            <p
-              className="text-xs font-black uppercase tracking-widest mb-1"
-              style={{ color: isFree ? "var(--neo-black)" : "white" }}
+          <div className="lg:sticky lg:top-24">
+            <TicketSelector event={event} />
+
+            {/* Back link (mobile-friendly duplicate) */}
+            <Link
+              href="/events"
+              className="detail-block block text-center font-bold text-neo-black text-sm py-2 underline underline-offset-2 mt-4"
             >
-              Precio
-            </p>
-            <p
-              className="text-5xl font-black"
-              style={{ color: isFree ? "var(--neo-black)" : "white" }}
-            >
-              {isFree ? "Gratis" : `${event.precio} €`}
-            </p>
+              ← Volver al catálogo
+            </Link>
           </div>
-
-          {/* CTA button */}
-          {event.enlaceCompra ? (
-            <a
-              href={event.enlaceCompra}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="detail-block neo-btn neo-btn-purple w-full block text-center py-4 text-lg font-black"
-              style={{ borderRadius: 0 }}
-            >
-              🎟️ Comprar entrada
-            </a>
-          ) : (
-            <div
-              className="detail-block py-4 w-full text-center font-black text-lg bg-neo-cream"
-              style={{
-                border: "3px solid var(--neo-black)",
-                boxShadow: "4px 4px 0 var(--neo-black)",
-                opacity: 0.7,
-              }}
-            >
-              ✅ Entrada gratuita
-            </div>
-          )}
-
-          {/* Info box */}
-          <div
-            className="detail-block p-4 bg-neo-cream"
-            style={{ border: "3px solid var(--neo-black)", boxShadow: "4px 4px 0 var(--neo-black)" }}
-          >
-            <p className="text-xs font-black uppercase text-neo-gray mb-2 tracking-wider">ℹ️ Información</p>
-            <p className="text-sm text-neo-black leading-relaxed">
-              {event.enlaceCompra
-                ? "Haz clic en Comprar entrada para adquirir tu acceso a través del portal oficial del evento."
-                : "Este evento es de acceso gratuito y no requiere entrada. Consulta el lugar para más detalles."}
-            </p>
-          </div>
-
-          {/* Back link (mobile-friendly duplicate) */}
-          <Link
-            href="/events"
-            className="detail-block block text-center font-bold text-neo-black text-sm py-2 underline underline-offset-2"
-          >
-            ← Volver al catálogo
-          </Link>
         </aside>
       </div>
     </div>
