@@ -6,14 +6,14 @@ import "leaflet/dist/leaflet.css";
 import { mockEvents } from "@/data/mockEvents";
 import EventMarker from "./EventMarker";
 
-const PR_CENTER: [number, number] = [18.22, -66.59];
-const PR_ZOOM = 9;
+const TENERIFE_CENTER: [number, number] = [28.29, -16.52];
+const TENERIFE_ZOOM = 10;
 
 export default function EventMap() {
   return (
     <MapContainer
-      center={PR_CENTER}
-      zoom={PR_ZOOM}
+      center={TENERIFE_CENTER}
+      zoom={TENERIFE_ZOOM}
       scrollWheelZoom={true}
       className="neo-map"
       style={{ height: "480px", width: "100%" }}
