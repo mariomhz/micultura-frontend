@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 import TransitionOverlay from "@/components/transitions/TransitionOverlay";
 import "./globals.css";
 
@@ -31,6 +32,7 @@ export default function RootLayout({
         <TransitionOverlay />
         <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );
