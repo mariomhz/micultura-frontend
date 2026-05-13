@@ -1,34 +1,32 @@
-import { getToken, removeToken } from "@/lib/token";
+import axios from "axios";
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 
-export async function apiFetch(
-  path: string,
-  options: RequestInit = {}
-): Promise<Response> {
-  const token = getToken();
+export const api = axios.create({
+  baseURL: BASE_URL,
+  headers: { "Content-Type": "application/json" },
+  withCredentials: false,
+});
 
-  const headers: HeadersInit = {
-    "Content-Type": "application/json",
-    ...options.headers,
-  };
-
-  if (token) {
-    (headers as Record<string, string>)["Authorization"] = `Bearer ${token}`;
-  }
-
-  const response = await fetch(`${API_URL}${path}`, {
-    ...options,
-    headers,
-  });
-
-  if (response.status === 401) {
-    removeToken();
-    if (typeof window !== "undefined") {
-      window.location.href = "/login";
+// Attach JWT token from localStorage on every request
+api.interceptors.request.use((config) => {
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("auth_token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
   }
+  return config;
+});
 
-  return response;
-}
+// Redirect to login on 401
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 && typeof window !== "undefined") {
+      localStorage.removeItem("auth_token");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
