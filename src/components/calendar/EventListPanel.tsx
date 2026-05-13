@@ -12,7 +12,7 @@ interface EventListPanelProps {
 export default function EventListPanel({ date, events, onClose }: EventListPanelProps) {
   if (!date) return null;
 
-  const formatted = new Date(date + "T00:00:00").toLocaleDateString("es-PR", {
+  const formatted = new Date(date + "T00:00:00").toLocaleDateString("es-ES", {
     weekday: "long",
     year: "numeric",
     month: "long",
