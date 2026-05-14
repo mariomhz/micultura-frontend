@@ -2,7 +2,8 @@
 
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { getToken, setToken as storeToken, removeToken } from "@/lib/token";
+import { getAccessToken, setAccessToken, clearAccessToken } from "@/lib/accessToken";
+import { logout as logoutRequest, refresh as refreshRequest } from "@/services/auth";
 
 interface AuthUser {
   id: string;
@@ -16,7 +17,7 @@ interface AuthContextType {
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (token: string, user: AuthUser) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,6 +27,9 @@ function decodeTokenPayload(token: string): AuthUser | null {
     const parts = token.split(".");
     if (parts.length !== 3) return null;
     const payload = JSON.parse(atob(parts[1]));
+    if (typeof payload.exp === "number" && payload.exp * 1000 < Date.now()) {
+      return null;
+    }
     return {
       id: payload.id,
       nombre: payload.nombre,
@@ -43,25 +47,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = getToken();
-    if (token) {
-      const decoded = decodeTokenPayload(token);
+    let cancelled = false;
+
+    async function restore() {
+      const cookieToken = getAccessToken();
+      const decoded = cookieToken ? decodeTokenPayload(cookieToken) : null;
       if (decoded) {
-        setUser(decoded);
+        if (!cancelled) setUser(decoded);
       } else {
-        removeToken();
+        const refreshed = await refreshRequest();
+        if (!cancelled && refreshed) {
+          setAccessToken(refreshed.token);
+          setUser(refreshed.user);
+        } else if (!cancelled) {
+          clearAccessToken();
+        }
       }
+      if (!cancelled) setIsLoading(false);
     }
-    setIsLoading(false);
+
+    restore();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const login = useCallback((token: string, authUser: AuthUser) => {
-    storeToken(token);
+    setAccessToken(token);
     setUser(authUser);
   }, []);
 
-  const logout = useCallback(() => {
-    removeToken();
+  const logout = useCallback(async () => {
+    await logoutRequest();
+    clearAccessToken();
     setUser(null);
     router.push("/login");
   }, [router]);
