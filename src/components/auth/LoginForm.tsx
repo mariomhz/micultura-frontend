@@ -2,13 +2,20 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { login, type AuthError } from "@/services/auth";
 import { useAuth } from "@/context/AuthContext";
 import { NeoFadeIn } from "@/components/animations/NeoAnimations";
 
+function safeNextPath(raw: string | null): string {
+  if (!raw) return "/";
+  if (!raw.startsWith("/") || raw.startsWith("//")) return "/";
+  return raw;
+}
+
 export default function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const auth = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,7 +35,7 @@ export default function LoginForm() {
     try {
       const res = await login({ email, password });
       auth.login(res.token, res.user);
-      router.push("/");
+      router.push(safeNextPath(searchParams.get("next")));
     } catch (err) {
       const authErr = err as AuthError;
       setError(authErr.message || "Error al iniciar sesión");
