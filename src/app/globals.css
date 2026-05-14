@@ -292,6 +292,69 @@
   visibility: hidden;
 }
 
+/* ===== Touch / Mobile Utilities ===== */
+
+/* Eliminate 300ms tap delay */
+button, a, [role="button"] {
+  touch-action: manipulation;
+}
+
+/* Active-press feedback for touch devices (mirrors JS hover on desktop) */
+.neo-card-touch:active {
+  box-shadow: 2px 2px 0 var(--neo-black) !important;
+  transform: translate(2px, 2px) !important;
+}
+
+/* Shimmer animation for skeleton loaders */
+@keyframes neo-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.neo-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--neo-cream) 25%,
+    var(--neo-yellow-light) 50%,
+    var(--neo-cream) 75%
+  );
+  background-size: 800px 100%;
+  animation: neo-shimmer 1.4s ease-in-out infinite;
+}
+
+/* Horizontal-scroll chip row — mobile first, wraps on sm+ */
+.neo-scroll-x {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 4px; /* room for shadow */
+}
+
+.neo-scroll-x::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .neo-scroll-x {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+}
+
+/* Responsive map height */
+.neo-map-container {
+  height: 300px;
+}
+
+@media (min-width: 640px) {
+  .neo-map-container {
+    height: 480px;
+  }
+}
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);

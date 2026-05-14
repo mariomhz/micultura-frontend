@@ -17,11 +17,12 @@ export function CategoryFilter({ categories, selected, onSelect }: CategoryFilte
       <p className="text-xs font-black uppercase tracking-widest text-neo-gray mb-3">
         Filtrar por categoría
       </p>
-      <div className="flex flex-wrap gap-2">
+      {/* neo-scroll-x: horizontal scroll on mobile, wraps on sm+ */}
+      <div className="neo-scroll-x">
         {/* "Todos" chip */}
         <button
           onClick={() => onSelect(null)}
-          className="px-4 py-1.5 font-black text-sm transition-all duration-100"
+          className="px-4 py-2 font-black text-sm transition-all duration-100 shrink-0"
           style={
             selected === null
               ? {
@@ -49,7 +50,7 @@ export function CategoryFilter({ categories, selected, onSelect }: CategoryFilte
             <button
               key={cat.id}
               onClick={() => onSelect(isActive ? null : cat.id)}
-              className="px-4 py-1.5 font-black text-sm transition-all duration-100"
+              className="px-4 py-2 font-black text-sm transition-all duration-100 shrink-0 whitespace-nowrap"
               style={
                 isActive
                   ? {

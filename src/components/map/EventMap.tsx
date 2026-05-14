@@ -6,17 +6,20 @@ import "leaflet/dist/leaflet.css";
 import { mockEvents } from "@/data/mockEvents";
 import EventMarker from "./EventMarker";
 
-const PR_CENTER: [number, number] = [18.22, -66.59];
-const PR_ZOOM = 9;
+// Tenerife geographic center
+const TENERIFE_CENTER: [number, number] = [28.29, -16.62];
+const DEFAULT_ZOOM = 10;
 
 export default function EventMap() {
   return (
     <MapContainer
-      center={PR_CENTER}
-      zoom={PR_ZOOM}
-      scrollWheelZoom={true}
-      className="neo-map"
-      style={{ height: "480px", width: "100%" }}
+      center={TENERIFE_CENTER}
+      zoom={DEFAULT_ZOOM}
+      scrollWheelZoom={false}   /* disabled — avoids scroll-hijack on mobile */
+      touchZoom={true}
+      dragging={true}
+      className="neo-map neo-map-container"   /* height responsive via globals.css */
+      style={{ width: "100%" }}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

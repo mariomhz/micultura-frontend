@@ -32,7 +32,7 @@ export function EventCard({ event }: EventCardProps) {
   return (
     <Link
       href={`/events/${event.id}`}
-      className="group block overflow-hidden bg-neo-cream"
+      className="group block overflow-hidden bg-neo-cream neo-card-touch"
       style={{
         border: "3px solid var(--neo-black)",
         boxShadow: "4px 4px 0 var(--neo-black)",
