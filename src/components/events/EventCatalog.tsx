@@ -6,38 +6,83 @@ import { useCategories } from "@/hooks/useCategories";
 import { useDebounce } from "@/hooks/useDebounce";
 import { CategoryFilter } from "./CategoryFilter";
 import { SearchBar } from "./SearchBar";
+import { FilterPanel, type FilterState, type PriceRange } from "./FilterPanel";
 import { EventGrid } from "./EventGrid";
+
+const EMPTY_FILTERS: FilterState = { priceRange: null, dateFrom: "", dateTo: "" };
+
+/* ── Price predicate ── */
+function matchesPrice(precio: number, range: PriceRange): boolean {
+  if (!range) return true;
+  if (range === "free")  return precio === 0;
+  if (range === "0-10")  return precio > 0 && precio <= 10;
+  if (range === "10-20") return precio > 10 && precio <= 20;
+  if (range === "20+")   return precio > 20;
+  return true;
+}
+
+/* ── Date predicate ── */
+function matchesDate(fecha: string, from: string, to: string): boolean {
+  if (!from && !to) return true;
+  const d = new Date(fecha);
+  if (from && d < new Date(from)) return false;
+  if (to   && d > new Date(to))   return false;
+  return true;
+}
 
 export function EventCatalog() {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-  const [searchInput, setSearchInput] = useState("");
+  const [searchInput, setSearchInput]           = useState("");
+  const [filters, setFilters]                   = useState<FilterState>(EMPTY_FILTERS);
 
   const debouncedSearch = useDebounce(searchInput, 300);
 
   const { events, loading: eventsLoading, error, usingMock } = useEvents(selectedCategory);
   const { categories, loading: catsLoading } = useCategories();
 
-  /* ── Client-side search filter ── */
+  /* ── Active filter count (excluding category, which has its own UI) ── */
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (debouncedSearch.trim()) count++;
+    if (filters.priceRange)     count++;
+    if (filters.dateFrom)       count++;
+    if (filters.dateTo)         count++;
+    return count;
+  }, [debouncedSearch, filters]);
+
+  /* ── Client-side filtering ── */
   const filteredEvents = useMemo(() => {
-    if (!debouncedSearch.trim()) return events;
-    const q = debouncedSearch.toLowerCase();
-    return events.filter(
-      (e) =>
-        e.titulo.toLowerCase().includes(q) ||
-        e.descripcion.toLowerCase().includes(q)
-    );
-  }, [events, debouncedSearch]);
+    return events.filter((e) => {
+      // text search
+      if (debouncedSearch.trim()) {
+        const q = debouncedSearch.toLowerCase();
+        if (
+          !e.titulo.toLowerCase().includes(q) &&
+          !e.descripcion.toLowerCase().includes(q)
+        ) return false;
+      }
+      // price
+      if (!matchesPrice(e.precio, filters.priceRange)) return false;
+      // date
+      if (!matchesDate(e.fecha, filters.dateFrom, filters.dateTo)) return false;
+      return true;
+    });
+  }, [events, debouncedSearch, filters]);
 
   const activeLabel =
     selectedCategory === null
       ? "Todos los eventos"
       : (categories.find((c) => c.id === selectedCategory)?.nombre ?? "Eventos");
 
-  const isFiltered = !!debouncedSearch.trim();
-
   function handleClearAll() {
     setSearchInput("");
     setSelectedCategory(null);
+    setFilters(EMPTY_FILTERS);
+  }
+
+  function handleClearFiltersOnly() {
+    setSearchInput("");
+    setFilters(EMPTY_FILTERS);
   }
 
   return (
@@ -73,10 +118,18 @@ export function EventCatalog() {
         onSelect={setSelectedCategory}
       />
 
+      {/* ── Advanced filter panel ── */}
+      <FilterPanel
+        filters={filters}
+        activeCount={activeFilterCount}
+        onFiltersChange={setFilters}
+        onClearAll={handleClearFiltersOnly}
+      />
+
       {/* ── Results header ── */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-        <h2 className="text-lg font-black text-neo-black flex items-center gap-2">
-          {isFiltered ? (
+        <h2 className="text-lg font-black text-neo-black flex items-center gap-2 flex-wrap">
+          {debouncedSearch.trim() ? (
             <>
               Resultados para{" "}
               <span
@@ -99,13 +152,13 @@ export function EventCatalog() {
           )}
         </h2>
 
-        {/* Clear search shortcut */}
-        {isFiltered && (
+        {/* Total active filter count badge */}
+        {activeFilterCount > 0 && (
           <button
-            onClick={handleClearAll}
+            onClick={handleClearFiltersOnly}
             className="text-sm font-black text-neo-gray hover:text-neo-black underline"
           >
-            ✕ Limpiar búsqueda
+            ✕ Limpiar filtros ({activeFilterCount})
           </button>
         )}
       </div>
