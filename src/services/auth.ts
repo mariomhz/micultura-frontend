@@ -1,81 +1,111 @@
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
+export interface AuthUser {
+  id: string;
+  nombre: string;
+  email: string;
+  rol: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: AuthUser;
+}
+
+export interface AuthError {
+  message: string;
+  errors?: Record<string, string>;
+}
+
 export interface RegisterPayload {
   nombre: string;
   email: string;
   password: string;
 }
 
-export interface AuthResponse {
-  token: string;
-  user: {
-    id: string;
-    nombre: string;
-    email: string;
-    rol: string;
-  };
-}
-
-export interface AuthError {
-  message: string;
-  field?: string;
-}
-
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-export async function register(payload: RegisterPayload): Promise<AuthResponse> {
-  await delay(800);
-
-  if (payload.email === "test@test.com") {
-    const error: AuthError = {
-      message: "Ya existe una cuenta con este email",
-      field: "email",
-    };
-    throw error;
-  }
-
-  return {
-    token: "mock-jwt-token-register",
-    user: {
-      id: "mock-uuid-001",
-      nombre: payload.nombre,
-      email: payload.email,
-      rol: "USER",
-    },
-  };
-}
-
 export interface LoginPayload {
   email: string;
   password: string;
+  rememberMe?: boolean;
+}
+
+interface BackendAuthResponse {
+  token: string;
+  id: string;
+  nombre: string;
+  email: string;
+  rol: string;
+}
+
+interface BackendErrorBody {
+  message?: string;
+  errors?: Record<string, string>;
+}
+
+function normalize(payload: BackendAuthResponse): AuthResponse {
+  return {
+    token: payload.token,
+    user: {
+      id: payload.id,
+      nombre: payload.nombre,
+      email: payload.email,
+      rol: payload.rol,
+    },
+  };
+}
+
+async function toAuthError(response: Response): Promise<AuthError> {
+  let body: BackendErrorBody = {};
+  try {
+    body = (await response.json()) as BackendErrorBody;
+  } catch {
+    // non-JSON; keep empty body
+  }
+  return {
+    message: body.message || `Error ${response.status}`,
+    errors: body.errors,
+  };
+}
+
+export async function register(payload: RegisterPayload): Promise<AuthResponse> {
+  const response = await fetch(`${API_URL}/api/auth/register`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) throw await toAuthError(response);
+  const data = (await response.json()) as BackendAuthResponse;
+  return normalize(data);
 }
 
 export async function login(payload: LoginPayload): Promise<AuthResponse> {
-  await delay(800);
+  const response = await fetch(`${API_URL}/api/auth/login`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) throw await toAuthError(response);
+  const data = (await response.json()) as BackendAuthResponse;
+  return normalize(data);
+}
 
-  if (payload.password !== "password123") {
-    const error: AuthError = {
-      message: "Credenciales inválidas",
-    };
-    throw error;
-  }
+export async function refresh(): Promise<AuthResponse | null> {
+  const response = await fetch(`${API_URL}/api/auth/refresh`, {
+    method: "POST",
+    credentials: "include",
+  });
+  if (!response.ok) return null;
+  const data = (await response.json()) as BackendAuthResponse;
+  return normalize(data);
+}
 
-  const fakePayload = btoa(
-    JSON.stringify({
-      sub: payload.email,
-      id: "mock-uuid-001",
-      nombre: "Usuario Mock",
-      rol: "USER",
-    })
-  );
-
-  return {
-    token: `eyHeader.${fakePayload}.eySignature`,
-    user: {
-      id: "mock-uuid-001",
-      nombre: "Usuario Mock",
-      email: payload.email,
-      rol: "USER",
-    },
-  };
+export async function logout(): Promise<void> {
+  await fetch(`${API_URL}/api/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  }).catch(() => {
+    // best-effort; cookie will still be cleared client-side
+  });
 }
