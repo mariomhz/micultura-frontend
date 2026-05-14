@@ -3,9 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { validateRegisterForm, type RegisterFormErrors } from "@/lib/validators";
 import { register, type AuthError } from "@/services/auth";
 import { NeoFadeIn } from "@/components/animations/NeoAnimations";
+import Spinner from "@/components/auth/Spinner";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -29,6 +31,7 @@ export default function RegisterForm() {
     setLoading(true);
     try {
       await register({ nombre, email, password });
+      toast.success("Cuenta creada. Inicia sesión para continuar.");
       router.push("/login");
     } catch (err) {
       const authErr = err as AuthError;
@@ -119,8 +122,10 @@ export default function RegisterForm() {
         <button
           type="submit"
           disabled={loading}
-          className="neo-btn neo-btn-purple w-full disabled:opacity-50"
+          aria-busy={loading}
+          className="neo-btn neo-btn-purple w-full disabled:opacity-50 flex items-center justify-center gap-2"
         >
+          {loading && <Spinner />}
           {loading ? "Registrando..." : "Registrarse"}
         </button>
 

@@ -3,9 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 import { login, type AuthError } from "@/services/auth";
 import { useAuth } from "@/context/AuthContext";
 import { NeoFadeIn } from "@/components/animations/NeoAnimations";
+import Spinner from "@/components/auth/Spinner";
 
 function safeNextPath(raw: string | null): string {
   if (!raw) return "/";
@@ -19,6 +21,7 @@ export default function LoginForm() {
   const auth = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -33,8 +36,9 @@ export default function LoginForm() {
 
     setLoading(true);
     try {
-      const res = await login({ email, password });
+      const res = await login({ email, password, rememberMe });
       auth.login(res.token, res.user);
+      toast.success(`¡Bienvenido, ${res.user.nombre}!`);
       router.push(safeNextPath(searchParams.get("next")));
     } catch (err) {
       const authErr = err as AuthError;
@@ -84,11 +88,23 @@ export default function LoginForm() {
           />
         </div>
 
+        <label className="flex items-center gap-2 text-sm font-medium cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+            className="w-4 h-4 accent-purple-600"
+          />
+          Recordarme
+        </label>
+
         <button
           type="submit"
           disabled={loading}
-          className="neo-btn neo-btn-purple w-full disabled:opacity-50"
+          aria-busy={loading}
+          className="neo-btn neo-btn-purple w-full disabled:opacity-50 flex items-center justify-center gap-2"
         >
+          {loading && <Spinner />}
           {loading ? "Ingresando..." : "Iniciar Sesión"}
         </button>
 
