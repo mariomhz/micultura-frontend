@@ -14,9 +14,11 @@ export default function EventMap() {
     <MapContainer
       center={TENERIFE_CENTER}
       zoom={TENERIFE_ZOOM}
-      scrollWheelZoom={true}
-      className="neo-map"
-      style={{ height: "480px", width: "100%" }}
+      scrollWheelZoom={false}
+      touchZoom={true}
+      dragging={true}
+      className="neo-map neo-map-container"
+      style={{ width: "100%" }}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
