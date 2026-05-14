@@ -5,29 +5,45 @@
 // PUT    /api/events/{id}     (admin)
 // DELETE /api/events/{id}     (admin)
 
-import { api } from "@/lib/api";
+import { apiFetch } from "@/lib/api";
 import type { Event } from "@/types";
 
 export type CreateEventPayload = Omit<Event, "id" | "categoria">;
 export type UpdateEventPayload = Partial<CreateEventPayload>;
 
+async function jsonOrThrow<T>(response: Response): Promise<T> {
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  return (await response.json()) as T;
+}
+
 export const eventsService = {
-  getAll: (categoryId?: number) =>
-    api
-      .get<Event[]>("/api/events", {
-        params: categoryId ? { category: categoryId } : undefined,
+  getAll: async (categoryId?: number): Promise<Event[]> => {
+    const path =
+      categoryId != null ? `/api/events?category=${categoryId}` : "/api/events";
+    return jsonOrThrow<Event[]>(await apiFetch(path));
+  },
+
+  getById: async (id: number): Promise<Event> =>
+    jsonOrThrow<Event>(await apiFetch(`/api/events/${id}`)),
+
+  create: async (payload: CreateEventPayload): Promise<Event> =>
+    jsonOrThrow<Event>(
+      await apiFetch("/api/events", {
+        method: "POST",
+        body: JSON.stringify(payload),
       })
-      .then((r) => r.data),
+    ),
 
-  getById: (id: number) =>
-    api.get<Event>(`/api/events/${id}`).then((r) => r.data),
+  update: async (id: number, payload: UpdateEventPayload): Promise<Event> =>
+    jsonOrThrow<Event>(
+      await apiFetch(`/api/events/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(payload),
+      })
+    ),
 
-  create: (payload: CreateEventPayload) =>
-    api.post<Event>("/api/events", payload).then((r) => r.data),
-
-  update: (id: number, payload: UpdateEventPayload) =>
-    api.put<Event>(`/api/events/${id}`, payload).then((r) => r.data),
-
-  remove: (id: number) =>
-    api.delete<void>(`/api/events/${id}`).then((r) => r.data),
+  remove: async (id: number): Promise<void> => {
+    const response = await apiFetch(`/api/events/${id}`, { method: "DELETE" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  },
 };

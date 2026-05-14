@@ -1,8 +1,12 @@
 // GET /api/categories
 
-import { api } from "@/lib/api";
+import { apiFetch } from "@/lib/api";
 import type { Category } from "@/types";
 
 export const categoriesService = {
-  getAll: () => api.get<Category[]>("/api/categories").then((r) => r.data),
+  getAll: async (): Promise<Category[]> => {
+    const response = await apiFetch("/api/categories");
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return (await response.json()) as Category[];
+  },
 };
