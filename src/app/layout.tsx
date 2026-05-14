@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Roboto_Mono, Space_Grotesk } from "next/font/google";
+import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 
@@ -31,7 +32,10 @@ export default function RootLayout({
       <body
         className={`${robotoMono.variable} ${spaceGrotesk.variable} antialiased`}
       >
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          {children}
+          <Toaster richColors position="top-right" />
+        </AuthProvider>
       </body>
     </html>
   );
