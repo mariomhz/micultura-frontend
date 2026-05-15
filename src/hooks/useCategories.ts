@@ -17,6 +17,13 @@ export function useCategories(): UseCategoriesResult {
   const [usingMock, setUsingMock] = useState(false);
 
   useEffect(() => {
+    if (process.env.NEXT_PUBLIC_USE_MOCKS === "true") {
+      setCategories(mockCategories);
+      setUsingMock(true);
+      setLoading(false);
+      return;
+    }
+
     categoriesService
       .getAll()
       .then((data) => {
