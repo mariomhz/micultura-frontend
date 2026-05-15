@@ -350,8 +350,14 @@ button, a, [role="button"] {
   font-family: inherit;
 }
 
+/* Toolbar wraps gracefully on narrow screens */
+.neo-calendar-wrapper .fc .fc-toolbar {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
 .neo-calendar-wrapper .fc .fc-toolbar-title {
-  font-size: 1.25rem;
+  font-size: clamp(0.9rem, 4vw, 1.25rem);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.02em;

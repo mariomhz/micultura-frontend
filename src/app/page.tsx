@@ -2,36 +2,12 @@ import PageLoadWrapper from "@/components/animations/PageLoadWrapper";
 import CalendarSection from "@/components/calendar/CalendarSection";
 import MapSection from "@/components/map/MapSection";
 import FeaturedEvents from "@/components/events/FeaturedEvents";
-import AuthStatus from "@/components/auth/AuthStatus";
+import Navbar from "@/components/layout/Navbar";
 
 export default function Home() {
   return (
     <PageLoadWrapper>
-      {/* ===== Sticky Nav ===== */}
-      <nav className="sticky top-0 z-50 bg-neo-white border-b-3 border-neo-black px-6 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="font-heading text-2xl font-bold tracking-tight">
-            MiCultura
-          </span>
-          <span className="neo-tag bg-neo-purple text-white text-[10px]">
-            Tenerife
-          </span>
-        </div>
-        <div className="hidden sm:flex items-center gap-6 font-body text-sm font-semibold">
-          <a href="#eventos" className="hover:text-neo-purple transition-colors">
-            Eventos
-          </a>
-          <a href="#calendario" className="hover:text-neo-purple transition-colors">
-            Calendario
-          </a>
-          <a href="#mapa" className="hover:text-neo-purple transition-colors">
-            Mapa
-          </a>
-        </div>
-        <div className="flex items-center gap-3">
-          <AuthStatus />
-        </div>
-      </nav>
+      <Navbar />
 
       <main>
         {/* ===== Hero Section ===== */}

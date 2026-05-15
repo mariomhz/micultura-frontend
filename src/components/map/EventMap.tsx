@@ -17,8 +17,8 @@ export default function EventMap() {
       scrollWheelZoom={false}
       touchZoom={true}
       dragging={true}
-      className="neo-map neo-map-container"
-      style={{ width: "100%" }}
+      className="neo-map"
+      style={{ height: "100%", width: "100%" }}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
