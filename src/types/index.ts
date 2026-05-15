@@ -36,15 +36,15 @@ export interface Event {
 // ── API envelope types ─────────────────────────────────────────────────────
 
 export interface ApiError {
-  status: number;
-  message: string;
-  timestamp: string;
+  error: string;
+  code: string;
 }
 
 export interface PaginatedResponse<T> {
   content: T[];
+  page: number;
+  size: number;
   totalElements: number;
   totalPages: number;
-  number: number; // current page (0-indexed)
-  size: number;
+  last: boolean;
 }

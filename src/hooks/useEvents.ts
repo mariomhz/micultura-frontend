@@ -25,16 +25,28 @@ export function useEvents(categoryId?: number | null): UseEventsResult {
     setError(null);
     setUsingMock(false);
 
+    const useMocks = process.env.NEXT_PUBLIC_USE_MOCKS === "true";
+
+    if (useMocks) {
+      const filtered =
+        categoryId != null
+          ? mockEvents.filter((e) => e.categoriaId === categoryId)
+          : mockEvents;
+      setEvents(filtered);
+      setUsingMock(true);
+      setLoading(false);
+      return;
+    }
+
     eventsService
-      .getAll(categoryId ?? undefined)
+      .getAll(categoryId != null ? { category: categoryId } : {})
       .then((data) => {
         if (cancelled) return;
-        setEvents(Array.isArray(data) ? data : (data as { content: Event[] }).content ?? []);
+        setEvents(data.content);
         setLoading(false);
       })
       .catch(() => {
         if (cancelled) return;
-        // Fallback to mock data when the API is not available
         const filtered =
           categoryId != null
             ? mockEvents.filter((e) => e.categoriaId === categoryId)
