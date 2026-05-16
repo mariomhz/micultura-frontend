@@ -41,8 +41,9 @@ export interface ApiError {
 
 export interface PaginatedResponse<T> {
   content: T[];
+  page: number;
+  size: number;
   totalElements: number;
   totalPages: number;
-  number: number; // current page (0-indexed)
-  size: number;
+  last: boolean;
 }

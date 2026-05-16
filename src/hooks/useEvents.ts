@@ -2,20 +2,23 @@
 
 import { useState, useEffect } from "react";
 import type { Event } from "@/types";
-import { eventsService, type GetAllParams } from "@/services/events.service";
+import { eventsService, type EventsParams } from "@/services/events.service";
+import { mockEvents } from "@/mocks/events";
 
 interface UseEventsResult {
   events: Event[];
   loading: boolean;
   error: string | null;
+  usingMock: boolean;
 }
 
-export function useEvents(params: GetAllParams = {}): UseEventsResult {
-  const [events, setEvents]   = useState<Event[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState<string | null>(null);
+export function useEvents(params: EventsParams = {}): UseEventsResult {
+  const [events, setEvents]     = useState<Event[]>([]);
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState<string | null>(null);
+  const [usingMock, setUsingMock] = useState(false);
 
-  // Stringify params so the effect re-runs only when values actually change
+  // Stringify so the effect only re-runs when values actually change
   const key = JSON.stringify(params);
 
   useEffect(() => {
@@ -23,6 +26,19 @@ export function useEvents(params: GetAllParams = {}): UseEventsResult {
 
     setLoading(true);
     setError(null);
+    setUsingMock(false);
+
+    // Explicit mock mode — set NEXT_PUBLIC_USE_MOCKS=true in .env.local
+    if (process.env.NEXT_PUBLIC_USE_MOCKS === "true") {
+      const filtered =
+        params.category != null
+          ? mockEvents.filter((e) => e.categoria.id === params.category)
+          : mockEvents;
+      setEvents(filtered);
+      setUsingMock(true);
+      setLoading(false);
+      return;
+    }
 
     eventsService
       .getAll(params)
@@ -46,5 +62,5 @@ export function useEvents(params: GetAllParams = {}): UseEventsResult {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
-  return { events, loading, error };
+  return { events, loading, error, usingMock };
 }

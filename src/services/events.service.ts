@@ -11,13 +11,16 @@ import type { Event, PaginatedResponse } from "@/types";
 export type CreateEventPayload = Omit<Event, "id" | "categoria">;
 export type UpdateEventPayload = Partial<CreateEventPayload>;
 
-export interface GetAllParams {
-  categoryId?: number | null;
-  search?: string;
+export interface EventsParams {
+  category?:   number;
+  search?:     string;
   fechaDesde?: string;
   fechaHasta?: string;
-  precioMin?: number;
-  precioMax?: number;
+  precioMin?:  number;
+  precioMax?:  number;
+  page?:       number;
+  size?:       number;
+  sort?:       string;
 }
 
 async function jsonOrThrow<T>(response: Response): Promise<T> {
@@ -26,15 +29,17 @@ async function jsonOrThrow<T>(response: Response): Promise<T> {
 }
 
 export const eventsService = {
-  getAll: async (params: GetAllParams = {}): Promise<PaginatedResponse<Event>> => {
-    const { categoryId, search, fechaDesde, fechaHasta, precioMin, precioMax } = params;
+  getAll: async (params: EventsParams = {}): Promise<PaginatedResponse<Event>> => {
     const qs = new URLSearchParams();
-    if (categoryId != null)  qs.set("category",   String(categoryId));
-    if (search?.trim())      qs.set("search",      search.trim());
-    if (fechaDesde)          qs.set("fechaDesde",  fechaDesde);
-    if (fechaHasta)          qs.set("fechaHasta",  fechaHasta);
-    if (precioMin != null)   qs.set("precioMin",   String(precioMin));
-    if (precioMax != null)   qs.set("precioMax",   String(precioMax));
+    if (params.category  != null)  qs.set("category",   String(params.category));
+    if (params.search?.trim())     qs.set("search",      params.search!.trim());
+    if (params.fechaDesde)         qs.set("fechaDesde",  params.fechaDesde);
+    if (params.fechaHasta)         qs.set("fechaHasta",  params.fechaHasta);
+    if (params.precioMin != null)  qs.set("precioMin",   String(params.precioMin));
+    if (params.precioMax != null)  qs.set("precioMax",   String(params.precioMax));
+    if (params.page      != null)  qs.set("page",        String(params.page));
+    if (params.size      != null)  qs.set("size",        String(params.size));
+    if (params.sort)               qs.set("sort",        params.sort);
     const query = qs.toString();
     return jsonOrThrow<PaginatedResponse<Event>>(
       await apiFetch(`/api/events${query ? `?${query}` : ""}`)

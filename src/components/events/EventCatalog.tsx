@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useEvents } from "@/hooks/useEvents";
+import type { EventsParams } from "@/services/events.service";
 import { useCategories } from "@/hooks/useCategories";
 import { useDebounce } from "@/hooks/useDebounce";
 import { CategoryFilter } from "./CategoryFilter";
@@ -12,7 +13,7 @@ import { EventGrid } from "./EventGrid";
 const EMPTY_FILTERS: FilterState = { priceRange: null, dateFrom: "", dateTo: "" };
 
 /** Translate the UI price-range pill to backend precioMin / precioMax */
-function priceRangeToMinMax(range: PriceRange): { precioMin?: number; precioMax?: number } {
+function priceRangeToMinMax(range: PriceRange): Pick<EventsParams, "precioMin" | "precioMax"> {
   if (!range)          return {};
   if (range === "free")  return { precioMax: 0 };
   if (range === "0-10")  return { precioMin: 0.01, precioMax: 10 };
@@ -34,7 +35,7 @@ export function EventCatalog() {
   );
 
   const { events, loading: eventsLoading, error } = useEvents({
-    categoryId:  selectedCategory,
+    category:    selectedCategory ?? undefined,
     search:      debouncedSearch.trim() || undefined,
     fechaDesde:  filters.dateFrom || undefined,
     fechaHasta:  filters.dateTo   || undefined,
