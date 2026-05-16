@@ -2,33 +2,34 @@
 
 import { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
-import type { MockEvent } from "@/data/mockEvents";
+import type { Event } from "@/types";
+import { getCategoryColor, formatPrice } from "@/lib/categoryColors";
 
 interface TicketSelectorProps {
-  event: MockEvent;
+  event: Event;
 }
 
 export default function TicketSelector({ event }: TicketSelectorProps) {
   const [quantity, setQuantity] = useState(1);
   const priceRef = useRef<HTMLSpanElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
+  const cardRef  = useRef<HTMLDivElement>(null);
 
-  const isFree = event.price === "Gratis";
-  const numericPrice = isFree ? 0 : parseFloat(event.price.replace("€", ""));
-  const total = numericPrice * quantity;
+  const color  = getCategoryColor(event.categoria?.nombre);
+  const isFree = event.precio === 0;
+  const total  = event.precio * quantity;
 
   useEffect(() => {
     if (priceRef.current) {
       gsap.fromTo(
         priceRef.current,
-        { scale: 1.3, color: event.color },
+        { scale: 1.3, color },
         { scale: 1, color: "var(--neo-black)", duration: 0.3, ease: "back.out(2)" }
       );
     }
-  }, [quantity, event.color]);
+  }, [quantity, color]);
 
   function handleBuy() {
-    if (!event.enlace_compra) return;
+    if (!event.enlaceCompra) return;
 
     if (cardRef.current) {
       gsap.to(cardRef.current, {
@@ -38,11 +39,11 @@ export default function TicketSelector({ event }: TicketSelectorProps) {
         repeat: 1,
         ease: "power2.inOut",
         onComplete: () => {
-          window.open(event.enlace_compra!, "_blank", "noopener,noreferrer");
+          window.open(event.enlaceCompra, "_blank", "noopener,noreferrer");
         },
       });
     } else {
-      window.open(event.enlace_compra, "_blank", "noopener,noreferrer");
+      window.open(event.enlaceCompra, "_blank", "noopener,noreferrer");
     }
   }
 
@@ -52,14 +53,14 @@ export default function TicketSelector({ event }: TicketSelectorProps) {
       <div className="flex items-center gap-3 mb-5">
         <div
           className="w-10 h-10 rounded-lg border-2 border-neo-black flex items-center justify-center text-lg"
-          style={{ backgroundColor: event.color + "20" }}
+          style={{ backgroundColor: color + "20" }}
         >
           🎟️
         </div>
         <div>
           <h3 className="font-heading text-base font-bold">Entradas</h3>
           <p className="text-xs text-neo-gray font-body">
-            {isFree ? "Evento gratuito" : `${event.price} por entrada`}
+            {isFree ? "Evento gratuito" : `${event.precio}€ por entrada`}
           </p>
         </div>
       </div>
@@ -67,9 +68,7 @@ export default function TicketSelector({ event }: TicketSelectorProps) {
       {/* Quantity selector */}
       {!isFree && (
         <div className="mb-5">
-          <label className="text-sm font-bold font-body block mb-2">
-            Cantidad
-          </label>
+          <label className="text-sm font-bold font-body block mb-2">Cantidad</label>
           <div className="flex items-center gap-0">
             <button
               onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -84,7 +83,7 @@ export default function TicketSelector({ event }: TicketSelectorProps) {
             <button
               onClick={() => setQuantity(Math.min(10, quantity + 1))}
               className="neo-btn py-2 px-4 rounded-l-none text-lg font-bold"
-              style={{ backgroundColor: event.color, color: "#fff" }}
+              style={{ backgroundColor: color, color: "#fff" }}
               aria-label="Aumentar cantidad"
             >
               +
@@ -102,11 +101,11 @@ export default function TicketSelector({ event }: TicketSelectorProps) {
       </div>
 
       {/* Buy button */}
-      {event.enlace_compra ? (
+      {event.enlaceCompra ? (
         <button
           onClick={handleBuy}
           className="neo-btn w-full py-3.5 text-base font-bold justify-center"
-          style={{ backgroundColor: event.color, color: "#fff" }}
+          style={{ backgroundColor: color, color: "#fff" }}
         >
           {isFree ? "Reservar entrada" : "Comprar entrada"}
           <svg className="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -117,7 +116,7 @@ export default function TicketSelector({ event }: TicketSelectorProps) {
         <div className="neo-card bg-neo-cream p-4 text-center hover:transform-none hover:shadow-[var(--neo-shadow)]">
           <p className="font-bold text-sm font-body">Entrada libre</p>
           <p className="text-xs text-neo-gray mt-1 font-body">
-            No necesitas reservar, solo presenta&apos;te en el evento
+            No necesitas reservar, solo preséntate en el evento
           </p>
         </div>
       )}

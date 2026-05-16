@@ -1,33 +1,45 @@
 import { notFound } from "next/navigation";
-import { getEventById, mockEvents } from "@/data/mockEvents";
 import EventDetail from "@/components/events/EventDetail";
+import type { Event } from "@/types";
+import { mockEvents } from "@/mocks/events";
 
 interface EventPageProps {
   params: Promise<{ id: string }>;
 }
 
-export async function generateStaticParams() {
-  return mockEvents.map((event) => ({ id: event.id }));
+async function fetchEvent(id: string): Promise<Event | null> {
+  const numericId = parseInt(id, 10);
+  if (isNaN(numericId)) return null;
+
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
+    const res = await fetch(`${apiUrl}/api/events/${numericId}`, {
+      cache: "no-store",
+    });
+    if (res.ok) return (await res.json()) as Event;
+  } catch {
+    // API not available — fall through to mock
+  }
+
+  return mockEvents.find((e) => e.id === numericId) ?? null;
 }
 
 export async function generateMetadata({ params }: EventPageProps) {
   const { id } = await params;
-  const event = getEventById(id);
+  const event = await fetchEvent(id);
   if (!event) return { title: "Evento no encontrado — MiCultura" };
 
   return {
-    title: `${event.title} — MiCultura`,
-    description: event.description,
+    title: `${event.titulo} — MiCultura`,
+    description: event.descripcion,
   };
 }
 
 export default async function EventPage({ params }: EventPageProps) {
   const { id } = await params;
-  const event = getEventById(id);
+  const event = await fetchEvent(id);
 
-  if (!event) {
-    notFound();
-  }
+  if (!event) notFound();
 
   return <EventDetail event={event} />;
 }

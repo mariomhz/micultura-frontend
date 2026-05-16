@@ -3,13 +3,15 @@
 import { MapContainer, TileLayer } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import "leaflet/dist/leaflet.css";
-import { mockEvents } from "@/data/mockEvents";
+import { useEvents } from "@/hooks/useEvents";
 import EventMarker from "./EventMarker";
 
 const TENERIFE_CENTER: [number, number] = [28.29, -16.52];
 const TENERIFE_ZOOM = 10;
 
 export default function EventMap() {
+  const { events } = useEvents();
+
   return (
     <MapContainer
       center={TENERIFE_CENTER}
@@ -37,9 +39,11 @@ export default function EventMap() {
           });
         }}
       >
-        {mockEvents.map((event) => (
-          <EventMarker key={event.id} event={event} />
-        ))}
+        {events
+          .filter((e) => e.latitud != null && e.longitud != null)
+          .map((event) => (
+            <EventMarker key={event.id} event={event} />
+          ))}
       </MarkerClusterGroup>
     </MapContainer>
   );

@@ -3,44 +3,30 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import type { MockEvent } from "@/data/mockEvents";
+import type { Event } from "@/types";
+import { getCategoryColor } from "@/lib/categoryColors";
 
-const categoryEmoji: Record<string, string> = {
-  Festival: "🎉",
-  Arte: "🎨",
-  Música: "🎶",
-  Taller: "🛠️",
-  Feria: "🎪",
-  Historia: "🏛️",
-  Cine: "🎬",
-  Gastronomía: "🍝",
-  Teatro: "🎭",
-  Bienestar: "🧘",
-};
+interface EventDetailMapProps {
+  event: Event;
+}
 
-function createIcon(event: MockEvent) {
-  const emoji = categoryEmoji[event.category] || "📍";
-  return L.divIcon({
+export default function EventDetailMap({ event }: EventDetailMapProps) {
+  const color = getCategoryColor(event.categoria?.nombre);
+  const emoji = event.categoria?.icono ?? "📍";
+
+  const icon = L.divIcon({
     className: "",
-    html: `
-      <div class="neo-marker" style="--marker-color: ${event.color}">
-        <div class="neo-marker-inner">${emoji}</div>
-      </div>
-    `,
+    html: `<div class="neo-marker" style="--marker-color:${color}">
+             <div class="neo-marker-inner">${emoji}</div>
+           </div>`,
     iconSize: [36, 44],
     iconAnchor: [18, 44],
     popupAnchor: [0, -44],
   });
-}
 
-interface EventDetailMapProps {
-  event: MockEvent;
-}
-
-export default function EventDetailMap({ event }: EventDetailMapProps) {
   return (
     <MapContainer
-      center={[event.location.lat, event.location.lng]}
+      center={[event.latitud, event.longitud]}
       zoom={15}
       scrollWheelZoom={false}
       dragging={false}
@@ -51,12 +37,9 @@ export default function EventDetailMap({ event }: EventDetailMapProps) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Marker
-        position={[event.location.lat, event.location.lng]}
-        icon={createIcon(event)}
-      >
+      <Marker position={[event.latitud, event.longitud]} icon={icon}>
         <Popup>
-          <div className="p-2 font-bold text-sm">{event.location.name}</div>
+          <div className="p-2 font-bold text-sm">{event.ubicacion}</div>
         </Popup>
       </Marker>
     </MapContainer>

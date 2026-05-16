@@ -2,28 +2,17 @@
 
 import L from "leaflet";
 import { Marker, Popup } from "react-leaflet";
-import type { MockEvent } from "@/data/mockEvents";
+import type { Event } from "@/types";
+import { getCategoryColor } from "@/lib/categoryColors";
 import EventPopup from "./EventPopup";
 
-const categoryEmoji: Record<string, string> = {
-  Festival: "\uD83C\uDF89",
-  Arte: "\uD83C\uDFA8",
-  "Música": "\uD83C\uDFB6",
-  Taller: "\uD83D\uDEE0\uFE0F",
-  Feria: "\uD83C\uDFAA",
-  Historia: "\uD83C\uDFDB\uFE0F",
-  Cine: "\uD83C\uDFAC",
-  "Gastronomía": "\uD83C\uDF7D\uFE0F",
-  Teatro: "\uD83C\uDFAD",
-  Bienestar: "\uD83E\uDDD8",
-};
-
-function createNeoIcon(event: MockEvent) {
-  const emoji = categoryEmoji[event.category] || "\uD83D\uDCCD";
+function createNeoIcon(event: Event) {
+  const color = getCategoryColor(event.categoria?.nombre);
+  const emoji = event.categoria?.icono ?? "📍";
   return L.divIcon({
     className: "",
     html: `
-      <div class="neo-marker" style="--marker-color: ${event.color}">
+      <div class="neo-marker" style="--marker-color: ${color}">
         <div class="neo-marker-inner">${emoji}</div>
       </div>
     `,
@@ -34,13 +23,13 @@ function createNeoIcon(event: MockEvent) {
 }
 
 interface EventMarkerProps {
-  event: MockEvent;
+  event: Event;
 }
 
 export default function EventMarker({ event }: EventMarkerProps) {
   return (
     <Marker
-      position={[event.location.lat, event.location.lng]}
+      position={[event.latitud, event.longitud]}
       icon={createNeoIcon(event)}
     >
       <Popup>

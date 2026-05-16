@@ -2,27 +2,26 @@
 
 import { useState, useRef } from "react";
 import gsap from "gsap";
-import type { MockEvent } from "@/data/mockEvents";
+import type { Event } from "@/types";
 
 interface ShareButtonsProps {
-  event: MockEvent;
+  event: Event;
 }
 
 export default function ShareButtons({ event }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const copiedRef = useRef<HTMLSpanElement>(null);
 
-  const url = typeof window !== "undefined" ? window.location.href : "";
-  const text = `${event.title} — ${event.date} en ${event.location.name}`;
+  const url  = typeof window !== "undefined" ? window.location.href : "";
+  const text = `${event.titulo} — ${event.fecha} en ${event.ubicacion}`;
 
   async function handleShare() {
     if (navigator.share) {
       try {
-        await navigator.share({ title: event.title, text, url });
+        await navigator.share({ title: event.titulo, text, url });
       } catch {
-        // User cancelled sharing
+        // User cancelled
       }
-      return;
     }
   }
 

@@ -7,20 +7,22 @@ import interactionPlugin from "@fullcalendar/interaction";
 import type { DateClickArg } from "@fullcalendar/interaction";
 import type { EventClickArg } from "@fullcalendar/core";
 import { useRouter } from "next/navigation";
-import { mockEvents, getEventsByDate } from "@/data/mockEvents";
-import type { MockEvent } from "@/data/mockEvents";
+import { useEvents } from "@/hooks/useEvents";
+import { getCategoryColor } from "@/lib/categoryColors";
+import type { Event } from "@/types";
 import EventListPanel from "./EventListPanel";
 
 export default function EventCalendar() {
   const router = useRouter();
+  const { events } = useEvents();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [panelEvents, setPanelEvents] = useState<MockEvent[]>([]);
+  const [panelEvents, setPanelEvents] = useState<Event[]>([]);
 
-  const fcEvents = mockEvents.map((e) => ({
-    id: e.id,
-    title: e.title,
-    date: e.date,
-    backgroundColor: e.color,
+  const fcEvents = events.map((e) => ({
+    id: String(e.id),
+    title: e.titulo,
+    date: e.fecha,
+    backgroundColor: getCategoryColor(e.categoria?.nombre),
     borderColor: "#1a1a1a",
     textColor: "#fff",
   }));
@@ -28,7 +30,7 @@ export default function EventCalendar() {
   function handleDateClick(info: DateClickArg) {
     const dateStr = info.dateStr;
     setSelectedDate(dateStr);
-    setPanelEvents(getEventsByDate(dateStr));
+    setPanelEvents(events.filter((e) => e.fecha === dateStr));
   }
 
   function handleEventClick(info: EventClickArg) {
