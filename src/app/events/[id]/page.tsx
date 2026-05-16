@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import EventDetail from "@/components/events/EventDetail";
 import type { Event } from "@/types";
-import { mockEvents } from "@/mocks/events";
 
 interface EventPageProps {
   params: Promise<{ id: string }>;
@@ -18,9 +17,13 @@ async function fetchEvent(id: string): Promise<Event | null> {
     });
     if (res.ok) return (await res.json()) as Event;
   } catch {
-    // API not available — fall through to mock
+    // API not available — fall through to mock (dev only)
   }
 
+  // Mock data is loaded lazily and only in development builds so it
+  // is never bundled into the production output.
+  if (process.env.NODE_ENV !== "development") return null;
+  const { mockEvents } = await import("@/mocks/events");
   return mockEvents.find((e) => e.id === numericId) ?? null;
 }
 

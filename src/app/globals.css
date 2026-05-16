@@ -285,7 +285,17 @@ button, a, [role="button"] {
   touch-action: manipulation;
 }
 
-/* Active-press feedback for touch (mirrors JS hover on desktop) */
+/* Hover + active-press feedback for cards (desktop hover / touch active) */
+.neo-card-touch {
+  box-shadow: var(--neo-shadow);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.neo-card-touch:hover {
+  box-shadow: var(--neo-shadow-hover);
+  transform: translate(2px, 2px);
+}
+
 .neo-card-touch:active {
   box-shadow: 2px 2px 0 var(--neo-black) !important;
   transform: translate(2px, 2px) !important;
