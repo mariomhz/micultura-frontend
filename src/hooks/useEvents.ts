@@ -29,7 +29,7 @@ export function useEvents(categoryId?: number | null): UseEventsResult {
       .getAll(categoryId ?? undefined)
       .then((data) => {
         if (cancelled) return;
-        setEvents(Array.isArray(data) ? data : (data as { content: Event[] }).content ?? []);
+        setEvents(data.content ?? []);
         setLoading(false);
       })
       .catch(() => {

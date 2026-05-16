@@ -17,10 +17,10 @@ async function jsonOrThrow<T>(response: Response): Promise<T> {
 }
 
 export const eventsService = {
-  getAll: async (categoryId?: number): Promise<Event[]> => {
+  getAll: async (categoryId?: number): Promise<import("@/types").PaginatedResponse<Event>> => {
     const path =
       categoryId != null ? `/api/events?category=${categoryId}` : "/api/events";
-    return jsonOrThrow<Event[]>(await apiFetch(path));
+    return jsonOrThrow<import("@/types").PaginatedResponse<Event>>(await apiFetch(path));
   },
 
   getById: async (id: number): Promise<Event> =>
