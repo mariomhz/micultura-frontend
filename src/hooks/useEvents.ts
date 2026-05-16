@@ -2,53 +2,49 @@
 
 import { useState, useEffect } from "react";
 import type { Event } from "@/types";
-import { eventsService } from "@/services/events.service";
-import { mockEvents } from "@/mocks/events";
+import { eventsService, type GetAllParams } from "@/services/events.service";
 
 interface UseEventsResult {
   events: Event[];
   loading: boolean;
   error: string | null;
-  usingMock: boolean;
 }
 
-export function useEvents(categoryId?: number | null): UseEventsResult {
-  const [events, setEvents] = useState<Event[]>([]);
+export function useEvents(params: GetAllParams = {}): UseEventsResult {
+  const [events, setEvents]   = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [usingMock, setUsingMock] = useState(false);
+  const [error, setError]     = useState<string | null>(null);
+
+  // Stringify params so the effect re-runs only when values actually change
+  const key = JSON.stringify(params);
 
   useEffect(() => {
     let cancelled = false;
 
     setLoading(true);
     setError(null);
-    setUsingMock(false);
 
     eventsService
-      .getAll(categoryId ?? undefined)
+      .getAll(params)
       .then((data) => {
         if (cancelled) return;
         setEvents(data.content ?? []);
         setLoading(false);
       })
-      .catch(() => {
+      .catch((err: unknown) => {
         if (cancelled) return;
-        // Fallback to mock data when the API is not available
-        const filtered =
-          categoryId != null
-            ? mockEvents.filter((e) => e.categoriaId === categoryId)
-            : mockEvents;
-        setEvents(filtered);
-        setUsingMock(true);
+        const msg =
+          err instanceof Error ? err.message : "Error al cargar los eventos";
+        setError(msg);
+        setEvents([]);
         setLoading(false);
-        setError("API no disponible — mostrando datos de ejemplo");
       });
 
     return () => {
       cancelled = true;
     };
-  }, [categoryId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
 
-  return { events, loading, error, usingMock };
+  return { events, loading, error };
 }

@@ -14,31 +14,29 @@ export interface Category {
   id: number;
   nombre: string;
   descripcion: string;
-  icono: string; // icon name or URL
+  icono: string;
 }
 
 export interface Event {
   id: number;
   titulo: string;
   descripcion: string;
-  fecha: string;       // ISO-8601 date  (YYYY-MM-DD)
-  hora: string;        // HH:mm
+  fecha: string;          // YYYY-MM-DD
+  hora: string | null;    // HH:mm — nullable in entity
   ubicacion: string;
-  latitud: number;
-  longitud: number;
-  categoriaId: number;
-  categoria?: Category;
-  imagenUrl: string;
+  latitud: number | null;
+  longitud: number | null;
+  categoria: Category;    // always populated (EAGER fetch, no categoriaId)
+  imagenUrl: string | null;
   precio: number;
-  enlaceCompra: string;
+  enlaceCompra: string | null;
 }
 
 // ── API envelope types ─────────────────────────────────────────────────────
 
 export interface ApiError {
-  status: number;
-  message: string;
-  timestamp: string;
+  error: string;
+  code: string;
 }
 
 export interface PaginatedResponse<T> {
