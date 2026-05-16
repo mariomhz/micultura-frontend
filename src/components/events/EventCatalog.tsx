@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useEvents } from "@/hooks/useEvents";
+import type { EventsParams } from "@/services/events.service";
 import { useCategories } from "@/hooks/useCategories";
 import { useDebounce } from "@/hooks/useDebounce";
 import { CategoryFilter } from "./CategoryFilter";
@@ -11,23 +12,14 @@ import { EventGrid } from "./EventGrid";
 
 const EMPTY_FILTERS: FilterState = { priceRange: null, dateFrom: "", dateTo: "" };
 
-/* ── Price predicate ── */
-function matchesPrice(precio: number, range: PriceRange): boolean {
-  if (!range) return true;
-  if (range === "free")  return precio === 0;
-  if (range === "0-10")  return precio > 0 && precio <= 10;
-  if (range === "10-20") return precio > 10 && precio <= 20;
-  if (range === "20+")   return precio > 20;
-  return true;
-}
-
-/* ── Date predicate ── */
-function matchesDate(fecha: string, from: string, to: string): boolean {
-  if (!from && !to) return true;
-  const d = new Date(fecha);
-  if (from && d < new Date(from)) return false;
-  if (to   && d > new Date(to))   return false;
-  return true;
+/** Translate the UI price-range pill to backend precioMin / precioMax */
+function priceRangeToMinMax(range: PriceRange): Pick<EventsParams, "precioMin" | "precioMax"> {
+  if (!range)          return {};
+  if (range === "free")  return { precioMax: 0 };
+  if (range === "0-10")  return { precioMin: 0.01, precioMax: 10 };
+  if (range === "10-20") return { precioMin: 10.01, precioMax: 20 };
+  if (range === "20+")   return { precioMin: 20.01 };
+  return {};
 }
 
 export function EventCatalog() {
@@ -37,7 +29,20 @@ export function EventCatalog() {
 
   const debouncedSearch = useDebounce(searchInput, 300);
 
-  const { events, loading: eventsLoading, error, usingMock } = useEvents(selectedCategory);
+  const priceParams = useMemo(
+    () => priceRangeToMinMax(filters.priceRange),
+    [filters.priceRange]
+  );
+
+  const { events, loading: eventsLoading, error } = useEvents({
+    category:    selectedCategory ?? undefined,
+    search:      debouncedSearch.trim() || undefined,
+    fechaDesde:  filters.dateFrom || undefined,
+    fechaHasta:  filters.dateTo   || undefined,
+    precioMin:   priceParams.precioMin,
+    precioMax:   priceParams.precioMax,
+  });
+
   const { categories, loading: catsLoading } = useCategories();
 
   /* ── Active filter count (excluding category, which has its own UI) ── */
@@ -49,25 +54,6 @@ export function EventCatalog() {
     if (filters.dateTo)         count++;
     return count;
   }, [debouncedSearch, filters]);
-
-  /* ── Client-side filtering ── */
-  const filteredEvents = useMemo(() => {
-    return events.filter((e) => {
-      // text search
-      if (debouncedSearch.trim()) {
-        const q = debouncedSearch.toLowerCase();
-        if (
-          !e.titulo.toLowerCase().includes(q) &&
-          !e.descripcion.toLowerCase().includes(q)
-        ) return false;
-      }
-      // price
-      if (!matchesPrice(e.precio, filters.priceRange)) return false;
-      // date
-      if (!matchesDate(e.fecha, filters.dateFrom, filters.dateTo)) return false;
-      return true;
-    });
-  }, [events, debouncedSearch, filters]);
 
   const activeLabel =
     selectedCategory === null
@@ -87,12 +73,12 @@ export function EventCatalog() {
 
   return (
     <div>
-      {/* Dev/offline notice */}
-      {usingMock && (
+      {/* API error notice */}
+      {error && (
         <div
-          className="mb-6 px-4 py-3 flex items-center gap-3 bg-neo-yellow font-bold text-neo-black text-sm"
-          style={{ border: "2px solid var(--neo-black)", boxShadow: "3px 3px 0 var(--neo-black)" }}
-          role="status"
+          className="mb-6 px-4 py-3 flex items-center gap-3 bg-red-100 font-bold text-red-800 text-sm"
+          style={{ border: "2px solid #b91c1c", boxShadow: "3px 3px 0 #b91c1c" }}
+          role="alert"
         >
           <span className="text-lg">⚠️</span>
           <span>{error}</span>
@@ -147,7 +133,7 @@ export function EventCatalog() {
               className="px-2 py-0.5 text-sm font-black"
               style={{ border: "2px solid var(--neo-black)", background: "var(--neo-yellow)" }}
             >
-              {filteredEvents.length}
+              {events.length}
             </span>
           )}
         </h2>
@@ -165,7 +151,7 @@ export function EventCatalog() {
 
       {/* ── Grid ── */}
       <EventGrid
-        events={filteredEvents}
+        events={events}
         loading={eventsLoading}
         onClearFilters={handleClearAll}
       />

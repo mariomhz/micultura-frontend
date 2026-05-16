@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import type { MockEvent } from "@/data/mockEvents";
+import type { Event } from "@/types";
+import { getCategoryColor } from "@/lib/categoryColors";
 
 interface EventListPanelProps {
   date: string | null;
-  events: MockEvent[];
+  events: Event[];
   onClose: () => void;
 }
 
@@ -32,31 +33,34 @@ export default function EventListPanel({ date, events, onClose }: EventListPanel
         <p className="text-neo-gray text-sm">No hay eventos para esta fecha.</p>
       ) : (
         <ul className="space-y-3">
-          {events.map((event) => (
-            <li key={event.id}>
-              <Link
-                href={`/events/${event.id}`}
-                className="flex items-start gap-3 p-3 border-2 border-neo-black rounded-lg hover:bg-neo-cream transition-colors"
-              >
-                <span
-                  className="mt-1 w-3 h-3 rounded-full border-2 border-neo-black shrink-0"
-                  style={{ backgroundColor: event.color }}
-                />
-                <div className="min-w-0">
-                  <p className="font-bold text-sm leading-tight">{event.title}</p>
-                  <p className="text-xs text-neo-gray mt-1">
-                    {event.startTime} – {event.endTime} &middot; {event.location.name}
-                  </p>
+          {events.map((event) => {
+            const color = getCategoryColor(event.categoria?.nombre);
+            return (
+              <li key={event.id}>
+                <Link
+                  href={`/events/${event.id}`}
+                  className="flex items-start gap-3 p-3 border-2 border-neo-black rounded-lg hover:bg-neo-cream transition-colors"
+                >
                   <span
-                    className="neo-tag mt-2 text-[10px]"
-                    style={{ backgroundColor: event.color, color: "#fff" }}
-                  >
-                    {event.category}
-                  </span>
-                </div>
-              </Link>
-            </li>
-          ))}
+                    className="mt-1 w-3 h-3 rounded-full border-2 border-neo-black shrink-0"
+                    style={{ backgroundColor: color }}
+                  />
+                  <div className="min-w-0">
+                    <p className="font-bold text-sm leading-tight">{event.titulo}</p>
+                    <p className="text-xs text-neo-gray mt-1">
+                      {event.hora} &middot; {event.ubicacion}
+                    </p>
+                    <span
+                      className="neo-tag mt-2 text-[10px]"
+                      style={{ backgroundColor: color, color: "#fff" }}
+                    >
+                      {event.categoria?.icono} {event.categoria?.nombre}
+                    </span>
+                  </div>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

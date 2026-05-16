@@ -1,23 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { jwtVerify } from "jose";
 
 const ACCESS_COOKIE = "mc_access";
 
-interface JwtPayload {
-  exp?: number;
-  rol?: string;
-}
-
-function decodePayload(token: string): JwtPayload | null {
-  try {
-    const parts = token.split(".");
-    if (parts.length !== 3) return null;
-    const b64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
-    const padded = b64 + "===".slice((b64.length + 3) % 4);
-    return JSON.parse(atob(padded));
-  } catch {
-    return null;
-  }
-}
+// Must match the JWT_SECRET used by the Spring Boot backend.
+// Set JWT_SECRET in .env.local (never NEXT_PUBLIC_).
+const secret = new TextEncoder().encode(
+  process.env.JWT_SECRET ?? "changeme"
+);
 
 function redirectToLogin(request: NextRequest): NextResponse {
   const url = request.nextUrl.clone();
@@ -27,24 +17,32 @@ function redirectToLogin(request: NextRequest): NextResponse {
   return NextResponse.redirect(url);
 }
 
-export function middleware(request: NextRequest): NextResponse {
+export async function middleware(request: NextRequest): Promise<NextResponse> {
   const token = request.cookies.get(ACCESS_COOKIE)?.value;
-  const payload = token ? decodePayload(token) : null;
+  if (!token) return redirectToLogin(request);
 
-  if (!payload || (payload.exp && payload.exp * 1000 < Date.now())) {
+  try {
+    // Verifies signature + expiry. Throws on any failure.
+    const { payload } = await jwtVerify<{ rol?: string }>(token, secret);
+
+    // Guard admin routes — add "/admin/:path*" to the matcher below
+    // once the admin pages are created.
+    if (
+      request.nextUrl.pathname.startsWith("/admin") &&
+      payload.rol !== "ADMIN"
+    ) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+  } catch {
+    // Invalid signature, expired token, or malformed JWT → force re-login
     return redirectToLogin(request);
-  }
-
-  if (request.nextUrl.pathname.startsWith("/admin") && payload.rol !== "ADMIN") {
-    const url = request.nextUrl.clone();
-    url.pathname = "/";
-    url.search = "";
-    return NextResponse.redirect(url);
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/profile/:path*", "/admin/:path*"],
+  // "/admin/:path*" intentionally omitted — no admin pages exist yet.
+  // Add it back here (and wire the role guard above) when they are created.
+  matcher: ["/profile/:path*"],
 };

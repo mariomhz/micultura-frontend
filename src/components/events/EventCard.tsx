@@ -22,30 +22,22 @@ const CATEGORY_COLORS: Record<number, string> = {
   6: "bg-neo-cream text-neo-black",
 };
 
+// categoriaId was removed from the Event type; keep the color map keyed by id
+// for backwards-compat until the badge color is migrated to getCategoryColor().
+
 interface EventCardProps {
   event: Event;
 }
 
 export function EventCard({ event }: EventCardProps) {
-  const tagColor = CATEGORY_COLORS[event.categoriaId] ?? "bg-neo-cream text-neo-black";
+  const tagColor =
+    CATEGORY_COLORS[event.categoria.id] ?? "bg-neo-cream text-neo-black";
 
   return (
     <Link
       href={`/events/${event.id}`}
       className="group block overflow-hidden bg-neo-cream neo-card-touch"
-      style={{
-        border: "3px solid var(--neo-black)",
-        boxShadow: "4px 4px 0 var(--neo-black)",
-        transition: "box-shadow 0.15s ease, transform 0.15s ease",
-      }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLElement).style.boxShadow = "2px 2px 0 var(--neo-black)";
-        (e.currentTarget as HTMLElement).style.transform = "translate(2px,2px)";
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLElement).style.boxShadow = "4px 4px 0 var(--neo-black)";
-        (e.currentTarget as HTMLElement).style.transform = "translate(0,0)";
-      }}
+      style={{ border: "3px solid var(--neo-black)" }}
     >
       {/* Image */}
       <div
@@ -64,14 +56,12 @@ export function EventCard({ event }: EventCardProps) {
       {/* Body */}
       <div className="p-4 flex flex-col gap-2">
         {/* Category badge */}
-        {event.categoria && (
-          <span
-            className={`self-start px-2 py-0.5 text-xs font-black uppercase ${tagColor}`}
-            style={{ border: "2px solid var(--neo-black)" }}
-          >
-            {event.categoria.icono} {event.categoria.nombre}
-          </span>
-        )}
+        <span
+          className={`self-start px-2 py-0.5 text-xs font-black uppercase ${tagColor}`}
+          style={{ border: "2px solid var(--neo-black)" }}
+        >
+          {event.categoria.icono} {event.categoria.nombre}
+        </span>
 
         {/* Title */}
         <h3
