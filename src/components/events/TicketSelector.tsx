@@ -29,7 +29,8 @@ export default function TicketSelector({ event }: TicketSelectorProps) {
   }, [quantity, color]);
 
   function handleBuy() {
-    if (!event.enlaceCompra) return;
+    const url = event.enlaceCompra;
+    if (!url) return;
 
     if (cardRef.current) {
       gsap.to(cardRef.current, {
@@ -39,11 +40,11 @@ export default function TicketSelector({ event }: TicketSelectorProps) {
         repeat: 1,
         ease: "power2.inOut",
         onComplete: () => {
-          window.open(event.enlaceCompra, "_blank", "noopener,noreferrer");
+          window.open(url, "_blank", "noopener,noreferrer");
         },
       });
     } else {
-      window.open(event.enlaceCompra, "_blank", "noopener,noreferrer");
+      window.open(url, "_blank", "noopener,noreferrer");
     }
   }
 

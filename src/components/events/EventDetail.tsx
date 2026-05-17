@@ -117,7 +117,7 @@ export default function EventDetail({ event }: EventDetailProps) {
         <div ref={heroRef} className="absolute inset-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={event.imagenUrl}
+            src={event.imagenUrl ?? ""}
             alt={event.titulo}
             className="w-full h-full object-cover"
           />

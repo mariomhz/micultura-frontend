@@ -27,6 +27,9 @@ interface EventMarkerProps {
 }
 
 export default function EventMarker({ event }: EventMarkerProps) {
+  // Caller (EventMap) filters out events with null coords before rendering.
+  if (event.latitud == null || event.longitud == null) return null;
+
   return (
     <Marker
       position={[event.latitud, event.longitud]}
