@@ -37,7 +37,12 @@ interface BackendAuthResponse {
   rol: string;
 }
 
+// Accepts both the legacy ({ message, errors }) and current
+// ({ error, code, fields }) error shapes from GlobalExceptionHandler.
 interface BackendErrorBody {
+  error?: string;
+  code?: string;
+  fields?: Record<string, string>;
   message?: string;
   errors?: Record<string, string>;
 }
@@ -62,8 +67,8 @@ async function toAuthError(response: Response): Promise<AuthError> {
     // non-JSON; keep empty body
   }
   return {
-    message: body.message || `Error ${response.status}`,
-    errors: body.errors,
+    message: body.error || body.message || `Error ${response.status}`,
+    errors: body.fields || body.errors,
   };
 }
 
