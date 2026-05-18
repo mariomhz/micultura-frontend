@@ -17,8 +17,12 @@ export function useGSAP(callback?: (ctx: gsap.Context) => void, deps: unknown[] 
   const ctxRef = useRef<gsap.Context | null>(null);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      callback?.(ctx!);
+    // Don't reference `ctx` from inside the callback — it runs synchronously
+    // during the const initialization, so the outer binding is still in TDZ
+    // (visible in production as "Cannot access 't' before initialization").
+    // GSAP passes the context as `self` to the callback for exactly this case.
+    const ctx = gsap.context((self) => {
+      callback?.(self);
     }, containerRef);
 
     ctxRef.current = ctx;
