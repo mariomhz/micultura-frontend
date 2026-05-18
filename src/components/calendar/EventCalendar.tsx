@@ -14,7 +14,9 @@ import EventListPanel from "./EventListPanel";
 
 export default function EventCalendar() {
   const router = useRouter();
-  const { events } = useEvents();
+  // Pull the full catalog so every month renders pins, not just the next ~20
+  // chronological events the default page size returns.
+  const { events } = useEvents({ size: 100 });
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [panelEvents, setPanelEvents] = useState<Event[]>([]);
 

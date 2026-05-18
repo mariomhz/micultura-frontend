@@ -10,7 +10,9 @@ const TENERIFE_CENTER: [number, number] = [28.29, -16.52];
 const TENERIFE_ZOOM = 10;
 
 export default function EventMap() {
-  const { events } = useEvents();
+  // Pull the full catalog so every event renders a pin, not just the next
+  // ~20 chronological events the default page size returns.
+  const { events } = useEvents({ size: 100 });
 
   return (
     <MapContainer
