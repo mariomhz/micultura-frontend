@@ -1,3 +1,4 @@
+import Link from "next/link";
 import PageLoadWrapper from "@/components/animations/PageLoadWrapper";
 import HeroShapes from "@/components/animations/HeroShapes";
 import HeroMarquee from "@/components/animations/HeroMarquee";
@@ -56,13 +57,43 @@ export default function Home() {
         {/* ===== Featured Events ===== */}
         <section id="eventos" data-anim="section" className="px-6 py-16 bg-neo-white">
           <div className="mx-auto max-w-6xl">
-            <h2 className="font-heading text-3xl font-bold tracking-tight mb-2">
-              Pr&oacute;ximos Eventos
-            </h2>
+            <div className="flex items-end justify-between flex-wrap gap-3 mb-2">
+              <h2 className="font-heading text-3xl font-bold tracking-tight">
+                Pr&oacute;ximos Eventos
+              </h2>
+              <Link
+                href="/events"
+                className="font-heading text-sm font-bold uppercase tracking-wider hover:opacity-70 underline underline-offset-4 decoration-2"
+              >
+                Ver todos →
+              </Link>
+            </div>
             <p className="text-neo-gray font-body mb-8">
               Lo mejor de la agenda cultural de Tenerife
             </p>
             <FeaturedEvents />
+
+            <div className="mt-10 flex justify-center">
+              <Link
+                href="/events"
+                className="neo-btn neo-btn-yellow text-base px-7 py-3 inline-flex items-center gap-2"
+              >
+                Ver todos los eventos
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M5 12h14" />
+                  <path d="M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
           </div>
         </section>
 
