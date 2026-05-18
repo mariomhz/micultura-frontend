@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import AISearchSheet from "./AISearchSheet";
+
+/** Routes where the FAB would be off-topic or visually crowded. */
+const HIDDEN_ROUTES = ["/login", "/register", "/profile"];
 
 /**
  * Floating action button anchored bottom-right that opens the AI search sheet.
@@ -10,6 +14,11 @@ import AISearchSheet from "./AISearchSheet";
  */
 export default function AISearchButton() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  if (HIDDEN_ROUTES.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
+    return null;
+  }
 
   return (
     <>

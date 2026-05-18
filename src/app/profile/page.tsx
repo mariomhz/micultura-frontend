@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { getMe, type MeResponse } from "@/services/users";
@@ -58,6 +59,26 @@ export default function ProfilePage() {
   return (
     <NeoFadeIn>
       <main className="container mx-auto px-4 py-16 max-w-2xl">
+        <Link
+          href="/"
+          className="neo-btn py-1.5 px-4 text-sm bg-neo-cream inline-flex items-center gap-2 mb-6"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M19 12H5" />
+            <path d="M12 19l-7-7 7-7" />
+          </svg>
+          Volver al inicio
+        </Link>
+
         <h1 className="text-3xl font-bold mb-8">Mi Perfil</h1>
 
         <section className="mb-10">
