@@ -1,23 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { jwtVerify, decodeJwt } from "jose";
+import { jwtVerify } from "jose";
 
 const ACCESS_COOKIE = "mc_access";
 
 // Must match APP_JWT_SECRET used by the Spring Boot backend, byte for byte.
 // Set JWT_SECRET in .env.local (never NEXT_PUBLIC_).
 const rawSecret = process.env.JWT_SECRET;
-const isProd = process.env.NODE_ENV === "production";
-
-if (!rawSecret && isProd) {
+if (!rawSecret && process.env.NODE_ENV === "production") {
   throw new Error(
     "JWT_SECRET is not set. Middleware cannot verify access tokens."
-  );
-}
-if (!rawSecret) {
-  console.warn(
-    "[middleware] JWT_SECRET is not set — running in permissive dev mode " +
-      "(presence + expiry only, no signature check). Set JWT_SECRET in " +
-      ".env.local for full verification."
   );
 }
 
@@ -35,24 +26,13 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   const token = request.cookies.get(ACCESS_COOKIE)?.value;
   if (!token) return redirectToLogin(request);
 
+  // Dev fallback when JWT_SECRET is unset: just check the cookie is there.
+  // Backend will reject any bad token on the next API call anyway. Prod
+  // still enforces signature verification because the secret is required.
+  if (!secret) return NextResponse.next();
+
   try {
-    let payload: { rol?: string; exp?: number };
-
-    if (secret) {
-      // Production / configured dev: full signature + expiry verification.
-      const verified = await jwtVerify<{ rol?: string }>(token, secret);
-      payload = verified.payload;
-    } else {
-      // Dev fallback: signature not checked, but expiry still enforced.
-      // Bad tokens get caught by the backend on the next API call anyway.
-      payload = decodeJwt<{ rol?: string }>(token);
-      if (payload.exp && payload.exp * 1000 < Date.now()) {
-        return redirectToLogin(request);
-      }
-    }
-
-    // Guard admin routes — add "/admin/:path*" to the matcher below
-    // once the admin pages are created.
+    const { payload } = await jwtVerify<{ rol?: string }>(token, secret);
     if (
       request.nextUrl.pathname.startsWith("/admin") &&
       payload.rol !== "ADMIN"
