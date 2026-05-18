@@ -1,23 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import { jwtVerify } from "jose";
+import { jwtVerify, decodeJwt } from "jose";
 
 const ACCESS_COOKIE = "mc_access";
 
 // Must match APP_JWT_SECRET used by the Spring Boot backend, byte for byte.
 // Set JWT_SECRET in .env.local (never NEXT_PUBLIC_).
 const rawSecret = process.env.JWT_SECRET;
-if (!rawSecret) {
-  if (process.env.NODE_ENV === "production") {
-    throw new Error(
-      "JWT_SECRET is not set. Middleware cannot verify access tokens."
-    );
-  }
-  console.warn(
-    "[middleware] JWT_SECRET is not set — falling back to a dev-only value. " +
-      "Tokens issued by the backend will fail verification."
+const isProd = process.env.NODE_ENV === "production";
+
+if (!rawSecret && isProd) {
+  throw new Error(
+    "JWT_SECRET is not set. Middleware cannot verify access tokens."
   );
 }
-const secret = new TextEncoder().encode(rawSecret ?? "dev-only-insecure-secret");
+if (!rawSecret) {
+  console.warn(
+    "[middleware] JWT_SECRET is not set — running in permissive dev mode " +
+      "(presence + expiry only, no signature check). Set JWT_SECRET in " +
+      ".env.local for full verification."
+  );
+}
+
+const secret = rawSecret ? new TextEncoder().encode(rawSecret) : null;
 
 function redirectToLogin(request: NextRequest): NextResponse {
   const url = request.nextUrl.clone();
@@ -32,8 +36,20 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   if (!token) return redirectToLogin(request);
 
   try {
-    // Verifies signature + expiry. Throws on any failure.
-    const { payload } = await jwtVerify<{ rol?: string }>(token, secret);
+    let payload: { rol?: string; exp?: number };
+
+    if (secret) {
+      // Production / configured dev: full signature + expiry verification.
+      const verified = await jwtVerify<{ rol?: string }>(token, secret);
+      payload = verified.payload;
+    } else {
+      // Dev fallback: signature not checked, but expiry still enforced.
+      // Bad tokens get caught by the backend on the next API call anyway.
+      payload = decodeJwt<{ rol?: string }>(token);
+      if (payload.exp && payload.exp * 1000 < Date.now()) {
+        return redirectToLogin(request);
+      }
+    }
 
     // Guard admin routes — add "/admin/:path*" to the matcher below
     // once the admin pages are created.

@@ -8,6 +8,7 @@ import type { Event } from "@/types";
 import { getCategoryColor, formatPrice } from "@/lib/categoryColors";
 import TicketSelector from "./TicketSelector";
 import ShareButtons from "./ShareButtons";
+import SaveEventButton from "./SaveEventButton";
 
 const EventDetailMap = dynamic(() => import("./EventDetailMap"), {
   ssr: false,
@@ -171,7 +172,7 @@ export default function EventDetail({ event }: EventDetailProps) {
               {event.ubicacion}
             </span>
           </div>
-          <div data-anim="detail-hero-price" className="mt-4">
+          <div data-anim="detail-hero-price" className="mt-4 flex items-center gap-3 flex-wrap">
             <span
               className="neo-tag text-sm"
               style={{
@@ -181,6 +182,7 @@ export default function EventDetail({ event }: EventDetailProps) {
             >
               {price}
             </span>
+            <SaveEventButton eventoId={event.id} />
           </div>
         </div>
       </div>
