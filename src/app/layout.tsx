@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Roboto_Mono, Space_Grotesk } from "next/font/google";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthContext";
+import AISearchButton from "@/components/ai-search/AISearchButton";
 import "./globals.css";
 
 const robotoMono = Roboto_Mono({
@@ -34,6 +35,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           {children}
+          <AISearchButton />
           <Toaster richColors position="top-right" />
         </AuthProvider>
       </body>
