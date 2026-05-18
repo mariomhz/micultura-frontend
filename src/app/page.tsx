@@ -1,4 +1,6 @@
 import PageLoadWrapper from "@/components/animations/PageLoadWrapper";
+import HeroShapes from "@/components/animations/HeroShapes";
+import HeroMarquee from "@/components/animations/HeroMarquee";
 import CalendarSection from "@/components/calendar/CalendarSection";
 import MapSection from "@/components/map/MapSection";
 import FeaturedEvents from "@/components/events/FeaturedEvents";
@@ -11,43 +13,44 @@ export default function Home() {
 
       <main>
         {/* ===== Hero Section ===== */}
-        <section className="relative bg-neo-purple overflow-hidden px-6 py-20 md:py-28">
-          {/* Decorative geometric shapes */}
-          <div className="hero-shape hero-shape-1" />
-          <div className="hero-shape hero-shape-2" />
-          <div className="hero-shape hero-shape-3" />
+        <section className="relative bg-neo-purple overflow-hidden flex flex-col min-h-[640px]">
+          <HeroShapes />
 
-          <div className="relative z-10 mx-auto max-w-4xl text-center">
-            <h1
-              data-anim="hero-title"
-              className="font-heading text-4xl md:text-6xl font-bold text-white tracking-tight leading-tight"
-            >
-              Descubre la Cultura
-              <br />
-              de Tenerife
-            </h1>
-            <p
-              data-anim="hero-subtitle"
-              className="mt-4 text-lg md:text-xl text-purple-200 font-body max-w-2xl mx-auto"
-            >
-              Festivales, conciertos, exposiciones, talleres y mucho
-              m&aacute;s. Todo lo que pasa en la isla, en un solo lugar.
-            </p>
-            <div data-anim="hero-cta" className="mt-8 flex flex-wrap justify-center gap-4">
-              <a
-                href="#eventos"
-                className="neo-btn neo-btn-yellow text-base px-6 py-3"
+          <div className="relative z-10 flex-1 flex items-center justify-center px-6 py-20 md:py-24">
+            <div className="mx-auto max-w-4xl text-center">
+              <h1
+                data-anim="hero-title"
+                className="font-heading text-4xl md:text-6xl font-bold text-white tracking-tight leading-tight"
               >
-                Ver Eventos
-              </a>
-              <a
-                href="#calendario"
-                className="neo-btn bg-white text-neo-black text-base px-6 py-3"
+                Descubre la Cultura
+                <br />
+                de Tenerife
+              </h1>
+              <p
+                data-anim="hero-subtitle"
+                className="mt-4 text-lg md:text-xl text-purple-200 font-body max-w-2xl mx-auto"
               >
-                Calendario
-              </a>
+                Festivales, conciertos, exposiciones, talleres y mucho
+                m&aacute;s. Todo lo que pasa en la isla, en un solo lugar.
+              </p>
+              <div data-anim="hero-cta" className="mt-8 flex flex-wrap justify-center gap-4">
+                <a
+                  href="#eventos"
+                  className="neo-btn neo-btn-yellow text-base px-6 py-3"
+                >
+                  Ver Eventos
+                </a>
+                <a
+                  href="#calendario"
+                  className="neo-btn bg-white text-neo-black text-base px-6 py-3"
+                >
+                  Calendario
+                </a>
+              </div>
             </div>
           </div>
+
+          <HeroMarquee />
         </section>
 
         {/* ===== Featured Events ===== */}
