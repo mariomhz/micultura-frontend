@@ -354,6 +354,47 @@ html {
   }
 }
 
+/* ── iPhone-class screens: scale down so the hero stops feeling stacked ── */
+@media (max-width: 480px) {
+  .hero-bg-text {
+    font-size: clamp(120px, 38vw, 200px);
+    opacity: 0.42;
+  }
+
+  .hero-dots {
+    width: 150px;
+    height: 150px;
+    background-size: 14px 14px;
+  }
+
+  .hero-marquee-compact {
+    padding: 10px 0;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+  }
+  .hero-marquee-compact .hero-marquee-cell > span:first-child {
+    padding: 0 14px;
+  }
+  .hero-marquee-compact .hero-marquee-sep {
+    font-size: 15px;
+  }
+
+  .hero-marquee-display {
+    font-size: 40px;
+    padding: 10px 0;
+    -webkit-text-stroke-width: 1.5px;
+  }
+  .hero-marquee-display .hero-marquee-cell > span:first-child {
+    padding: 0 16px;
+  }
+
+  .hero-marquee-row,
+  .hero-marquee-row-display {
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+  }
+}
+
 /* Border utilities */
 .border-b-3 {
   border-bottom: 3px solid;
