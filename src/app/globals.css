@@ -176,6 +176,10 @@ h1, h2, h3, h4, h5, h6 {
 /* Smooth scroll for anchor links */
 html {
   scroll-behavior: smooth;
+  /* Prevent iOS Safari from inflating text on rotate / small viewports —
+     this is the usual culprit behind "looks fine in DevTools, wrong on iPhone". */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 /* ===== Hero Backdrop =====
