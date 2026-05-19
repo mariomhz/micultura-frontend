@@ -213,10 +213,13 @@ html {
 .hero-bg-text {
   display: block;
   font-family: var(--font-heading, system-ui), system-ui, sans-serif;
-  font-weight: 900;
+  /* Roboto Mono caps at 700 in next/font config; using 900 forced Safari to
+     synthesize bold, which collided the N into its neighbors on Mac. */
+  font-weight: 700;
+  font-synthesis: none;
   font-size: clamp(160px, 28vw, 460px);
   line-height: 0.85;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.02em;
   color: transparent;
   -webkit-text-stroke: 3px var(--neo-yellow, #facc15);
   white-space: nowrap;
