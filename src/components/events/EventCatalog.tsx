@@ -34,7 +34,7 @@ export function EventCatalog() {
     [filters.priceRange]
   );
 
-  const { events, loading: eventsLoading, error } = useEvents({
+  const { events, loading: eventsLoading, error, usingMock } = useEvents({
     category:    selectedCategory ?? undefined,
     search:      debouncedSearch.trim() || undefined,
     fechaDesde:  filters.dateFrom || undefined,
@@ -73,6 +73,20 @@ export function EventCatalog() {
 
   return (
     <div>
+      {/* Offline snapshot notice */}
+      {usingMock && !eventsLoading && (
+        <div
+          className="mb-6 px-4 py-3 flex items-center gap-3 bg-neo-yellow font-bold text-neo-black text-sm"
+          style={{ border: "2px solid var(--neo-black)", boxShadow: "3px 3px 0 var(--neo-black)" }}
+          role="status"
+        >
+          <span className="text-lg">📡</span>
+          <span>
+            El servidor está despertando. Mientras tanto ves el catálogo guardado.
+          </span>
+        </div>
+      )}
+
       {/* API error notice */}
       {error && (
         <div

@@ -5,7 +5,8 @@
 // PUT    /api/events/{id}     (admin)
 // DELETE /api/events/{id}     (admin)
 
-import { apiFetch } from "@/lib/api";
+import { apiFetch, apiFetchWithTimeout } from "@/lib/api";
+import { fallbackEventById, fallbackEvents } from "@/lib/fallbackData";
 import type { Event, PaginatedResponse } from "@/types";
 
 export type CreateEventPayload = Omit<Event, "id" | "categoria">;

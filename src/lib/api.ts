@@ -3,6 +3,24 @@ import { refresh as refreshAuth } from "@/services/auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
+// Free-tier hosting sleeps and can take a minute to wake. Read requests give up
+// well before that so callers can fall back instead of leaving a blank screen.
+const READ_TIMEOUT_MS = 8000;
+
+export async function apiFetchWithTimeout(
+  path: string,
+  options: RequestInit = {},
+  timeoutMs: number = READ_TIMEOUT_MS
+): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await apiFetch(path, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 let refreshing: Promise<string | null> | null = null;
 
 function getOrStartRefresh(): Promise<string | null> {

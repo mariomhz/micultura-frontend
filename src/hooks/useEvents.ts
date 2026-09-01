@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import type { Event } from "@/types";
 import { eventsService, type EventsParams } from "@/services/events.service";
+import { isFallbackActive } from "@/lib/fallbackData";
 import { mockEvents } from "@/mocks/events";
 
 interface UseEventsResult {
